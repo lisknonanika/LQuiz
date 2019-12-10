@@ -1,12 +1,14 @@
 const { utils } = require('@liskhq/lisk-transactions');
 const BigNum = require('@liskhq/bignum');
+const cryptography = require('@liskhq/lisk-cryptography');
 const crypto = require('crypto');
 const myutility = require('../../utility')
+const request = require('../../request');
 const QuestionTransaction = require('../../transaction/51_question_transaction');
 
-module.exports.validator = (req) => {
+module.exports.validator = async(req) => {
     let errors = [];
-
+    
     // ----------------------------
     // Question Field Check
     // ----------------------------
@@ -42,22 +44,73 @@ module.exports.validator = (req) => {
     }
 
     // ----------------------------
-    // Other Field Check
+    // Other Str Field Check
     // ----------------------------
-    if (!req.body.other) return errors;
+    if (req.body.other && req.body.other.str && !myutility.checkUtil.checkBytesLength(req.body.other.str, 0, 256)) {
+        errors.push('A other str must be in the range 0-256 bytes');
+    }
 
     // ----------------------------
-    // String Field Check
+    // Other URL Field Check
     // ----------------------------
-    if (req.body.other.str && !myutility.checkUtil.checkBytesLength(req.body.other.str, 0, 256)) {
-        errors.push('A other str must be in the range 0-256 bytes');
+    if (req.body.other && req.body.other.url && !myutility.checkUtil.checkUrl(req.body.other.url)) {
+        errors.push('A URL must be a valid URL');
+    }
+
+    // ----------------------------
+    // Passphrase Field Check
+    // ----------------------------
+    if (!req.body.passphrase) {
+        errors.push('Passphrase is required');
+        return errors;
+    }
+
+    // ----------------------------
+    // Passphrase Check
+    // ----------------------------
+    let address = "";
+    try {
+        address = cryptography.getAddressFromPassphrase(req.body.passphrase);
+        // if (address !== req.decoded.address) {
+        //     errors.push('Incorrect passphrase');
+        //     return errors;
+        // }
+    } catch (err) {
+        errors.push('Incorrect passphrase');
+        return errors;
+    }
+
+    // ----------------------------
+    // Address Check
+    // ----------------------------
+    const acounts = await request({
+        method: 'GET',
+        url: `http://127.0.0.1:4000/api/accounts?address=${address}`,
+        json: true
+    });
+    if (!acounts.data || acounts.data.length === 0) {
+        errors.push('Not initialized address');
+        return errors;
     }
     
     // ----------------------------
-    // URL Field Check
+    // Second Passphrase Field Check
     // ----------------------------
-    else if (req.body.other.url && !myutility.checkUtil.checkUrl(req.body.other.url)) {
-        errors.push('A URL must be a valid URL');
+    if (acounts.data[0].secondPublicKey) {
+        if (!req.body.secondPassphrase) {
+            errors.push('Second Passphrase is required');
+            return errors;
+        }
+        try {
+            const keys = cryptography.getPrivateAndPublicKeyFromPassphrase(req.body.secondPassphrase);
+            if (acounts.data[0].secondPublicKey !== keys.publicKey) {
+                errors.push('Incorrect second passphrase');
+                return errors;
+            }
+        } catch (err) {
+            errors.push('Incorrect second passphrase');
+            return errors;
+        }
     }
     return errors;
 }
@@ -119,13 +172,16 @@ module.exports.createTransaction = (req) => {
     param.fee = new BigNum(myutility.getSummary(param.asset.quiz.reward)).add(new BigNum(QuestionTransaction.FEE)).toString();
 
     // Set recipientId
-    param.recipientId = '8273455169423958419L';
+    param.recipientId = req.decoded.address;
 
     // Set timestamp
     param.timestamp = myutility.getTimestamp();
 
     let tx = new QuestionTransaction(param);
-    tx.sign('robust swift grocery peasant forget share enable convince deputy road keep cheap');
-
+    if (req.body.secondPassphrase) {
+        tx.sign(req.body.passphrase, req.body.secondPassphrase);
+    } else {
+        tx.sign(req.body.passphrase);
+    }
     return tx;
 }
