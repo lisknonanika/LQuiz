@@ -10,8 +10,8 @@ module.exports.checkBytesLength = (val, min, max) => {
     if (typeof val !== 'string') return false;
 
     const l = Buffer.byteLength(val);
-    if (typeof min === 'number' && l < min) return false;
-    if (typeof max === 'number' && l > max) return false;
+    if (min !== undefined && (isNaN(+min) || l < +min)) return false;
+    if (max !== undefined && (isNaN(+max) || l > +max)) return false;
     return true;
 }
 
@@ -35,7 +35,7 @@ module.exports.checkNumber = (val, min, max) => {
         return true;
     }
     if (typeof val !== 'number' && isNaN(+val)) return false;
-    if (typeof min === 'number' && +val < min) return false;
-    if (typeof max === 'number' && +val > max) return false;
+    if (min !== undefined && (isNaN(+min) || +val < +min)) return false;
+    if (max !== undefined && (isNaN(+max) || +val > +max)) return false;
     return true;
 }

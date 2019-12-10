@@ -28,7 +28,7 @@ class QuestionTransaction extends BaseTransaction {
      * quiz: {
      *     question: String,
      *     answer: String,
-     *     reward: [Number]
+     *     reward: [String]
      *     exp: Number,
      *     other: {
      *         str: String,
@@ -37,8 +37,11 @@ class QuestionTransaction extends BaseTransaction {
      * }
      */
     validateAsset() {
-        console.log('validateAsset===================')
         const errors = [];
+        
+        // ----------------------------
+        // Quiz Field Check
+        // ----------------------------
         if (!this.asset.quiz) {
             errors.push(
                 new TransactionError(
@@ -48,6 +51,9 @@ class QuestionTransaction extends BaseTransaction {
             );
         }
 
+        // ----------------------------
+        // Question Field Check
+        // ----------------------------
         else if (!myutils.checkUtil.checkBytesLength(this.asset.quiz.question, 1, 256)) {
             errors.push(
                 new TransactionError(
@@ -60,6 +66,9 @@ class QuestionTransaction extends BaseTransaction {
             );
         }
 
+        // ----------------------------
+        // Answer Field Check
+        // ----------------------------
         else if (!myutils.checkUtil.checkBytesLength(this.asset.quiz.answer, 64, 64)) {
             errors.push(
                 new TransactionError(
@@ -72,6 +81,9 @@ class QuestionTransaction extends BaseTransaction {
             );
         }
 
+        // ----------------------------
+        // EXP Field Check
+        // ----------------------------
         else if (!myutils.checkUtil.checkNumber(this.asset.quiz.exp, myutils.getTimestamp())) {
             errors.push(
                 new TransactionError(
@@ -84,6 +96,9 @@ class QuestionTransaction extends BaseTransaction {
             );
         }
 
+        // ----------------------------
+        // Reward Field Check
+        // ----------------------------
         else if (!Array.isArray(this.asset.quiz.reward) || this.asset.quiz.reward.length === 0 ||
             !myutils.checkUtil.checkNumber(
                 this.asset.quiz.reward,
@@ -100,6 +115,9 @@ class QuestionTransaction extends BaseTransaction {
             );
         }
 
+        // ----------------------------
+        // Fee Check
+        // ----------------------------
         else if (new BigNum(myutils.getSummary(this.asset.quiz.reward)).add(new BigNum(QuestionTransaction.FEE)).toString() !== this.fee.toString()) {
             errors.push(
                 new TransactionError(
@@ -112,30 +130,41 @@ class QuestionTransaction extends BaseTransaction {
             );
         }
 
-        else if (this.asset.quiz.other) {
-            if (this.asset.quiz.other.str && !myutils.checkUtil.checkBytesLength(this.asset.quiz.other.str, 0, 256)) {
-                errors.push(
-                    new TransactionError(
-                        'Invalid "asset.asset.quiz.other.str" defined on transaction',
-                        this.id,
-                        '.asset.asset.quiz.other.str',
-                        this.asset.quiz.other.str,
-                        'Must be in the range 0-256 bytes',
-                    )
-                );
-            }
-    
-            else if (this.asset.quiz.other.url && !myutils.checkUtil.checkUrl(this.asset.quiz.other.url)) {
-                errors.push(
-                    new TransactionError(
-                        'Invalid "asset.asset.quiz.other.url" defined on transaction',
-                        this.id,
-                        '.asset.asset.quiz.other.url',
-                        this.asset.quiz.other.url,
-                        'Must be a valid URL',
-                    )
-                );
-            }
+        // ----------------------------
+        // Other Field Check
+        // ----------------------------
+        else if (!this.asset.quiz.other) {
+            return errors;
+        }
+
+        // ----------------------------
+        // String Field Check
+        // ----------------------------
+        else if (this.asset.quiz.other.str && !myutils.checkUtil.checkBytesLength(this.asset.quiz.other.str, 0, 256)) {
+            errors.push(
+                new TransactionError(
+                    'Invalid "asset.asset.quiz.other.str" defined on transaction',
+                    this.id,
+                    '.asset.asset.quiz.other.str',
+                    this.asset.quiz.other.str,
+                    'Must be in the range 0-256 bytes',
+                )
+            );
+        }
+        
+        // ----------------------------
+        // URL Field Check
+        // ----------------------------
+        else if (this.asset.quiz.other.url && !myutils.checkUtil.checkUrl(this.asset.quiz.other.url)) {
+            errors.push(
+                new TransactionError(
+                    'Invalid "asset.asset.quiz.other.url" defined on transaction',
+                    this.id,
+                    '.asset.asset.quiz.other.url',
+                    this.asset.quiz.other.url,
+                    'Must be a valid URL',
+                )
+            );
         }
         return errors;
     }
