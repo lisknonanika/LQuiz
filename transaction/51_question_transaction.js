@@ -1,5 +1,4 @@
 const { BaseTransaction, TransactionError, utils } = require('@liskhq/lisk-transactions');
-const BigNum = require('@liskhq/bignum');
 const myutils = require('../utility');
 
 class QuestionTransaction extends BaseTransaction {
@@ -9,7 +8,7 @@ class QuestionTransaction extends BaseTransaction {
     }
 
     static get FEE () {
-        return `${10 ** 7}`;
+        return 0;
     };
 
     async prepare(store) {
@@ -43,12 +42,7 @@ class QuestionTransaction extends BaseTransaction {
         // Quiz Field Check
         // ----------------------------
         if (!this.asset.quiz) {
-            errors.push(
-                new TransactionError(
-                    'Required parameter "asset.quiz" is not found',
-                    this.id
-                )
-            );
+            errors.push(new TransactionError('Required parameter "asset.quiz" is not found', this.id));
         }
 
         // ----------------------------
@@ -100,17 +94,14 @@ class QuestionTransaction extends BaseTransaction {
         // Reward Field Check
         // ----------------------------
         else if (!Array.isArray(this.asset.quiz.reward) || this.asset.quiz.reward.length === 0 ||
-            !myutils.checkUtil.checkNumber(
-                this.asset.quiz.reward,
-                QuestionTransaction.FEE,
-                utils.convertLSKToBeddows('100'))) {
+            !myutils.checkUtil.checkNumber(this.asset.quiz.reward, '1', utils.convertLSKToBeddows('100'))) {
             errors.push(
                 new TransactionError(
                     'Invalid "asset.asset.quiz.reward" defined on transaction',
                     this.id,
                     '.asset.asset.quiz.reward',
                     this.asset.quiz.reward,
-                    'Must be in the range of 0.1-100 LSQ (Array)',
+                    `Must be in the range of ${utils.convertBeddowsToLSK('1')}-100 LSQ (Array)`,
                 )
             );
         }
@@ -118,14 +109,14 @@ class QuestionTransaction extends BaseTransaction {
         // ----------------------------
         // Fee Check
         // ----------------------------
-        else if (new BigNum(myutils.getSummary(this.asset.quiz.reward)).add(new BigNum(QuestionTransaction.FEE)).toString() !== this.fee.toString()) {
+        else if (this.fee <= 0 || myutils.getSummary(this.asset.quiz.reward) !== this.fee.toString()) {
             errors.push(
                 new TransactionError(
                     'Invalid "fee" defined on transaction',
                     this.id,
                     '.asset.asset.quiz.other.str',
                     this.fee.toString(),
-                    'Must be equal to the total reward + 0.1',
+                    'Must be equal to the total reward',
                 )
             );
         }

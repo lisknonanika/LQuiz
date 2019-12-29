@@ -1,18 +1,17 @@
-const { utils } = require('@liskhq/lisk-transactions');
 const cryptography = require('@liskhq/lisk-cryptography');
 const crypto = require('crypto');
 const myutility = require('../../utility')
 const request = require('../../request');
-const QuestionTransaction = require('../../transaction/51_question_transaction');
+const AnswerTransaction = require('../../transaction/52_answer_transaction');
 
 module.exports.validator = async(req) => {
     let errors = [];
-    
+
     // ----------------------------
-    // Question Field Check
+    // Id Field Check
     // ----------------------------
-    if (!myutility.checkUtil.checkBytesLength(req.body.question, 1, 256)) {
-        errors.push('A question must be in the range 1-256 bytes');
+    if (!req.body.id) {
+        errors.push('ID is required');
     }
 
     // ----------------------------
@@ -20,33 +19,6 @@ module.exports.validator = async(req) => {
     // ----------------------------
     if (!myutility.checkUtil.checkBytesLength(req.body.answer, 1, 256)) {
         errors.push('A answer must be in the range 1-256 bytes');
-    }
-
-    // ----------------------------
-    // Reward Field Check
-    // ----------------------------
-    if (!Array.isArray(req.body.reward) || req.body.reward.length === 0) {
-        errors.push('A reward must be in the range of 0.1-100 LSQ');
-    } else {
-        let reward = []
-        for (r of req.body.reward) reward.push(utils.convertLSKToBeddows(r));
-        if(!myutility.checkUtil.checkNumber(reward, '1', utils.convertLSKToBeddows('100'))) {
-            errors.push(`A reward must be in the range of ${utils.convertBeddowsToLSK('1')}-100 LSQ`);
-        }
-    }
-
-    // ----------------------------
-    // Other Str Field Check
-    // ----------------------------
-    if (req.body.other && req.body.other.str && !myutility.checkUtil.checkBytesLength(req.body.other.str, 0, 256)) {
-        errors.push('A other str must be in the range 0-256 bytes');
-    }
-
-    // ----------------------------
-    // Other URL Field Check
-    // ----------------------------
-    if (req.body.other && req.body.other.url && !myutility.checkUtil.checkUrl(req.body.other.url)) {
-        errors.push('A URL must be a valid URL');
     }
 
     // ----------------------------
@@ -73,6 +45,54 @@ module.exports.validator = async(req) => {
     }
 
     // ----------------------------
+    // Question Transaction Check
+    // ----------------------------
+    let questionTransactions = [];
+    try {
+        questionTransactions = await request({
+            method: 'GET',
+            url: `http://127.0.0.1:4000/api/transactions?id=${req.body.id}&type=51`,
+            json: true
+        });
+        if (!questionTransactions.data || questionTransactions.data.length === 0) {
+            errors.push('Target Question Not Found.');
+            return errors;
+        }
+        if (questionTransactions.data[0].asset.quiz.answer !== crypto.createHash('sha256').update(req.body.answer, 'utf8').digest('hex')) {
+            errors.push('Answer missmatch.');
+            return errors;
+        }
+    } catch (err) {
+        errors.push('Target Question Not Found.');
+        return errors;
+    }
+    
+
+    // ----------------------------
+    // Answer Transaction Check
+    // ----------------------------
+    let answerTransactions = [];
+    try {
+        answerTransactions = await request({
+            method: 'GET',
+            url: `http://127.0.0.1:4000/api/transactions?data=${req.body.id}&type=52`,
+            json: true
+        });
+        if (answerTransactions.data && answerTransactions.data.length > 0) {
+            if (answerTransactions.data.filter(tx => tx.senderId === address).length > 0) {
+                errors.push('This question has already been answered.');
+                return errors;
+            }
+            if (answerTransactions.data.length > questionTransactions.data[0].asset.quiz.reward.length) {
+                errors.push('This question has reached the maximum number of answers.');
+                return errors;
+            }
+        }
+    } catch (err) {
+        // nothing
+    }
+
+    // ----------------------------
     // Address Check
     // ----------------------------
     const acounts = await request({
@@ -81,7 +101,6 @@ module.exports.validator = async(req) => {
         json: true
     });
     if (!acounts.data || acounts.data.length === 0) {
-        errors.push('Not initialized address');
         return errors;
     }
     
@@ -108,16 +127,10 @@ module.exports.validator = async(req) => {
 }
 
 /**
+ * data: String,
  * asset: {
  *     quiz: {
- *         question: String,
- *         answer: String,
- *         reward: [String],
- *         exp: Number,
- *         other: {
- *             str: String,
- *             url: String
- *         }
+ *         answer: String
  *     }
  * },
  * fee: String,
@@ -126,16 +139,10 @@ module.exports.validator = async(req) => {
  */
 module.exports.createTransaction = (req) => {
     let param = {
+        data: "",
         asset: {
             quiz: {
-                question: "",
-                answer: "",
-                reward: [],
-                exp: 0,
-                other: {
-                    str: "",
-                    url: ""
-                }
+                answer: ""
             }
         },
         fee: "0",
@@ -143,31 +150,16 @@ module.exports.createTransaction = (req) => {
         timestamp: 0
     }
 
-    // Set question
-    param.asset.quiz.question = req.body.question;
+    // Set data
+    param.asset.data = req.body.id;
     
     // Set answer
     param.asset.quiz.answer = crypto.createHash('sha256').update(req.body.answer, 'utf8').digest('hex');
 
-    // Set reward
-    param.asset.quiz.reward = [];
-    for (r of req.body.reward) param.asset.quiz.reward.push(utils.convertLSKToBeddows(r));
-    
-    // Set exp
-    if (!req.body.exp) param.asset.quiz.exp = myutility.getTimestamp(14);
-    else param.asset.quiz.exp = myutility.getTimestamp(req.body.exp);
-
-    // Set other
-    if (req.body.other && req.body.other.str) param.asset.quiz.other.str = req.body.other.str;
-    if (req.body.other && req.body.other.url) param.asset.quiz.other.url = req.body.other.url;
-
-    // Set fee
-    param.fee = myutility.getSummary(param.asset.quiz.reward);
-
     // Set timestamp
     param.timestamp = myutility.getTimestamp();
 
-    let tx = new QuestionTransaction(param);
+    let tx = new AnswerTransaction(param);
     if (req.body.secondPassphrase) {
         tx.sign(req.body.passphrase, req.body.secondPassphrase);
     } else {

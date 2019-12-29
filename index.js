@@ -1,9 +1,11 @@
 const { Application } = require('lisk-sdk');
 const { genesisBlockDevnet, configDevnet } = require('./config');
 const QuestionTransaction = require('./transaction/51_question_transaction');
+const AnswerTransaction = require('./transaction/52_answer_transaction');
 
 const app = new Application(genesisBlockDevnet, configDevnet);
-app.registerTransaction(QuestionTransaction); 
+app.registerTransaction(QuestionTransaction);
+app.registerTransaction(AnswerTransaction);
 
 app
 	.run()
