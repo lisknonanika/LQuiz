@@ -19,11 +19,9 @@ class AnswerTransaction extends BaseTransaction {
             },
         ]);
 
-		store.entities.Transaction.addFilter('target_id', 'FILTER_TYPE_CUSTOM', {
-			condition:
-				// eslint-disable-next-line no-template-curly-in-string
-				'trs.asset @> \'{ "data": "${target_id:value}" }\'::jsonb',
-		});
+        store.entities.Transaction.addFilter('target_id', 'FILTER_TYPE_CUSTOM', {
+            condition: 'trs.asset @> \'{ "data": "${target_id:value}" }\'::jsonb',
+        });
 
         await store.transaction.cache([
             {
@@ -87,6 +85,10 @@ class AnswerTransaction extends BaseTransaction {
             errors.push(new TransactionError('Question Transaction Not Found.', this.id));
             return errors;
         }
+        if (questionTransaction.senderId !== this.senderId) {
+            errors.push(new TransactionError('Can not answer own question.', this.id));
+            return errors;
+        }
         if (questionTransaction.asset.quiz.answer !== this.asset.quiz.answer) {
             errors.push(new TransactionError('Answer missmatch.', this.id));
             return errors;
@@ -103,7 +105,13 @@ class AnswerTransaction extends BaseTransaction {
         }
         
         const reward = questionTransaction.asset.quiz.reward[sameTypeTransactions.length];
+        if (!reward) {
+            errors.push(new errors_1.TransactionError('Invalid reward', this.id));
+            return errors;
+        }
+
         const sender = store.account.get(this.senderId);
+        
         const afterBalance = new BigNum(sender.balance).add(new BigNum(reward));
         if (afterBalance.gt(constants.MAX_TRANSACTION_AMOUNT)) {
             errors.push(new errors_1.TransactionError('Invalid reward', this.id));

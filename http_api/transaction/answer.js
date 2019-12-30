@@ -58,6 +58,10 @@ module.exports.validator = async(req) => {
             errors.push('Target Question Not Found.');
             return errors;
         }
+        if (questionTransactions.data[0].senderId === address) {
+            errors.push('Can not answer own question.');
+            return errors;
+        }
         if (questionTransactions.data[0].asset.quiz.answer !== crypto.createHash('sha256').update(req.body.answer, 'utf8').digest('hex')) {
             errors.push('Answer missmatch.');
             return errors;
