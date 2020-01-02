@@ -1,6 +1,6 @@
 const cryptography = require('@liskhq/lisk-cryptography');
 const crypto = require('crypto');
-const myutility = require('../../utility')
+const myUtils = require('../../utility')
 const request = require('../../request');
 const AnswerTransaction = require('../../transaction/52_answer_transaction');
 
@@ -17,7 +17,7 @@ module.exports.validator = async(req) => {
     // ----------------------------
     // Answer Field Check
     // ----------------------------
-    if (!myutility.checkUtil.checkBytesLength(req.body.answer, 1, 256)) {
+    if (!myUtils.checkUtil.checkBytesLength(req.body.answer, 1, 256)) {
         errors.push('A answer must be in the range 1-256 bytes');
     }
 
@@ -70,7 +70,7 @@ module.exports.validator = async(req) => {
         errors.push('Target Question Not Found.');
         return errors;
     }
-    
+    req.body.reward = questionTransactions.data[0].asset.quiz.reward;
 
     // ----------------------------
     // Answer Transaction Check
@@ -87,7 +87,7 @@ module.exports.validator = async(req) => {
                 errors.push('This question has already been answered.');
                 return errors;
             }
-            if (answerTransactions.data.length > questionTransactions.data[0].asset.quiz.reward.length) {
+            if (answerTransactions.data.length >= questionTransactions.data[0].asset.quiz.num) {
                 errors.push('This question has reached the maximum number of answers.');
                 return errors;
             }
@@ -134,7 +134,8 @@ module.exports.validator = async(req) => {
  * data: String,
  * asset: {
  *     quiz: {
- *         answer: String
+ *         answer: String,
+ *         reward: String
  *     }
  * },
  * fee: String,
@@ -146,7 +147,8 @@ module.exports.createTransaction = (req) => {
         data: "",
         asset: {
             quiz: {
-                answer: ""
+                answer: "",
+                reward: "0"
             }
         },
         fee: "0",
@@ -160,8 +162,11 @@ module.exports.createTransaction = (req) => {
     // Set answer
     param.asset.quiz.answer = crypto.createHash('sha256').update(req.body.answer, 'utf8').digest('hex');
 
+    // Set reward
+    param.asset.quiz.reward = req.body.reward;
+
     // Set timestamp
-    param.timestamp = myutility.getTimestamp();
+    param.timestamp = myUtils.getTimestamp();
 
     let tx = new AnswerTransaction(param);
     if (req.body.secondPassphrase) {

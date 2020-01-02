@@ -1,7 +1,7 @@
 const { utils } = require('@liskhq/lisk-transactions');
 const cryptography = require('@liskhq/lisk-cryptography');
 const crypto = require('crypto');
-const myutility = require('../../utility')
+const myUtils = require('../../utility')
 const request = require('../../request');
 const QuestionTransaction = require('../../transaction/51_question_transaction');
 
@@ -11,41 +11,35 @@ module.exports.validator = async(req) => {
     // ----------------------------
     // Question Field Check
     // ----------------------------
-    if (!myutility.checkUtil.checkBytesLength(req.body.question, 1, 256)) {
+    if (!myUtils.checkUtil.checkBytesLength(req.body.question, 1, 256)) {
         errors.push('A question must be in the range 1-256 bytes');
     }
 
     // ----------------------------
     // Answer Field Check
     // ----------------------------
-    if (!myutility.checkUtil.checkBytesLength(req.body.answer, 1, 256)) {
+    if (!myUtils.checkUtil.checkBytesLength(req.body.answer, 1, 256)) {
         errors.push('A answer must be in the range 1-256 bytes');
     }
 
     // ----------------------------
     // Reward Field Check
     // ----------------------------
-    if (!Array.isArray(req.body.reward) || req.body.reward.length === 0) {
-        errors.push('A reward must be in the range of 0.1-100 LSQ');
-    } else {
-        let reward = []
-        for (r of req.body.reward) reward.push(utils.convertLSKToBeddows(r));
-        if(!myutility.checkUtil.checkNumber(reward, '1', utils.convertLSKToBeddows('100'))) {
-            errors.push(`A reward must be in the range of ${utils.convertBeddowsToLSK('1')}-100 LSQ`);
-        }
+    if(!myUtils.checkUtil.checkNumber(req.body.reward, utils.convertBeddowsToLSK('1'), '100')) {
+        errors.push(`A reward must be in the range of ${utils.convertBeddowsToLSK('1')} to 100 LSK`);
     }
 
     // ----------------------------
-    // Other Str Field Check
+    // Number of people Field Check
     // ----------------------------
-    if (req.body.other && req.body.other.str && !myutility.checkUtil.checkBytesLength(req.body.other.str, 0, 256)) {
-        errors.push('A other str must be in the range 0-256 bytes');
+    if(req.body.num && !myUtils.checkUtil.checkNumber(req.body.num, '1', '100')) {
+        errors.push(`A num must be in the range of 1 to 100`);
     }
 
     // ----------------------------
-    // Other URL Field Check
+    // URL Field Check
     // ----------------------------
-    if (req.body.other && req.body.other.url && !myutility.checkUtil.checkUrl(req.body.other.url)) {
+    if (req.body.url && !myUtils.checkUtil.checkUrl(req.body.url)) {
         errors.push('A URL must be a valid URL');
     }
 
@@ -112,12 +106,9 @@ module.exports.validator = async(req) => {
  *     quiz: {
  *         question: String,
  *         answer: String,
- *         reward: [String],
- *         exp: Number,
- *         other: {
- *             str: String,
- *             url: String
- *         }
+ *         reward: String,
+ *         num: Number,
+ *         url: String
  *     }
  * },
  * fee: String,
@@ -130,12 +121,9 @@ module.exports.createTransaction = (req) => {
             quiz: {
                 question: "",
                 answer: "",
-                reward: [],
-                exp: 0,
-                other: {
-                    str: "",
-                    url: ""
-                }
+                reward: "0",
+                num: 1,
+                url: ""
             }
         },
         fee: "0",
@@ -150,22 +138,19 @@ module.exports.createTransaction = (req) => {
     param.asset.quiz.answer = crypto.createHash('sha256').update(req.body.answer, 'utf8').digest('hex');
 
     // Set reward
-    param.asset.quiz.reward = [];
-    for (r of req.body.reward) param.asset.quiz.reward.push(utils.convertLSKToBeddows(r));
+    param.asset.quiz.reward = utils.convertLSKToBeddows(req.body.reward);
     
-    // Set exp
-    if (!req.body.exp) param.asset.quiz.exp = myutility.getTimestamp(14);
-    else param.asset.quiz.exp = myutility.getTimestamp(req.body.exp);
+    // Set num of people
+    if(req.body.num) param.asset.quiz.num = req.body.num;
 
-    // Set other
-    if (req.body.other && req.body.other.str) param.asset.quiz.other.str = req.body.other.str;
-    if (req.body.other && req.body.other.url) param.asset.quiz.other.url = req.body.other.url;
+    // Set url
+    if (req.body.url) param.asset.quiz.url = req.body.url;
 
     // Set fee
-    param.fee = myutility.getSummary(param.asset.quiz.reward);
+    param.fee = myUtils.mul(param.asset.quiz.reward, param.asset.quiz.num);
 
     // Set timestamp
-    param.timestamp = myutility.getTimestamp();
+    param.timestamp = myUtils.getTimestamp();
 
     let tx = new QuestionTransaction(param);
     if (req.body.secondPassphrase) {

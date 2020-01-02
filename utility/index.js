@@ -15,12 +15,22 @@ module.exports.getTimestamp = (d) => {
     return parseInt(inSeconds);
 }
 
-module.exports.getSummary = (val) => {
-    let n = 0;
-    if (Array.isArray(val)) {
-        for (s of val) {
-            n = new BigNum(n).add(new BigNum(s));
-        }
-    }
-    return n.toString();
+module.exports.add = (val1, val2) => {
+    if (!checkUtil.checkNumber(val1) || !checkUtil.checkNumber(val2)) return undefined;
+    return new BigNum(val1).add(new BigNum(val2)).toString();
+}
+
+module.exports.sub = (val1, val2) => {
+    if (!checkUtil.checkNumber(val1) || !checkUtil.checkNumber(val2)) return undefined;
+    return new BigNum(val1).sub(new BigNum(val2)).toString();
+}
+
+module.exports.mul = (val1, val2) => {
+    if (!checkUtil.checkNumber(val1) || !checkUtil.checkNumber(val2)) return undefined;
+    return new BigNum(val1).mul(new BigNum(val2)).toString();
+}
+
+module.exports.div = (val1, val2) => {
+    if (!checkUtil.checkNumber(val1) || !checkUtil.checkNumber(val2)) return undefined;
+    return new BigNum(val1).div(new BigNum(val2)).toString();
 }

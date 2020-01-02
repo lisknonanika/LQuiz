@@ -1,5 +1,5 @@
 const { BaseTransaction, TransactionError, utils } = require('@liskhq/lisk-transactions');
-const myutils = require('../utility');
+const myUtils = require('../utility');
 
 class QuestionTransaction extends BaseTransaction {
 
@@ -27,12 +27,9 @@ class QuestionTransaction extends BaseTransaction {
      * quiz: {
      *     question: String,
      *     answer: String,
-     *     reward: [String]
-     *     exp: Number,
-     *     other: {
-     *         str: String,
-     *         url: String
-     *     }
+     *     reward: String
+     *     num: Number,
+     *     url: String
      * }
      */
     validateAsset() {
@@ -48,7 +45,7 @@ class QuestionTransaction extends BaseTransaction {
         // ----------------------------
         // Question Field Check
         // ----------------------------
-        else if (!myutils.checkUtil.checkBytesLength(this.asset.quiz.question, 1, 256)) {
+        else if (!myUtils.checkUtil.checkBytesLength(this.asset.quiz.question, 1, 256)) {
             errors.push(
                 new TransactionError(
                     'Invalid "asset.quiz.question" defined on transaction',
@@ -63,7 +60,7 @@ class QuestionTransaction extends BaseTransaction {
         // ----------------------------
         // Answer Field Check
         // ----------------------------
-        else if (!myutils.checkUtil.checkBytesLength(this.asset.quiz.answer, 64, 64)) {
+        else if (!myUtils.checkUtil.checkBytesLength(this.asset.quiz.answer, 64, 64)) {
             errors.push(
                 new TransactionError(
                     'Invalid "asset.quiz.answer" defined on transaction',
@@ -76,69 +73,31 @@ class QuestionTransaction extends BaseTransaction {
         }
 
         // ----------------------------
-        // EXP Field Check
-        // ----------------------------
-        else if (!myutils.checkUtil.checkNumber(this.asset.quiz.exp, myutils.getTimestamp())) {
-            errors.push(
-                new TransactionError(
-                    'Invalid "asset.asset.quiz.exp" defined on transaction',
-                    this.id,
-                    '.asset.asset.quiz.exp',
-                    this.asset.quiz.exp,
-                    'Must be a future date',
-                )
-            );
-        }
-
-        // ----------------------------
         // Reward Field Check
         // ----------------------------
-        else if (!Array.isArray(this.asset.quiz.reward) || this.asset.quiz.reward.length === 0 ||
-            !myutils.checkUtil.checkNumber(this.asset.quiz.reward, '1', utils.convertLSKToBeddows('100'))) {
+        else if (!myUtils.checkUtil.checkNumber(this.asset.quiz.reward, '1', utils.convertLSKToBeddows('100'))) {
             errors.push(
                 new TransactionError(
                     'Invalid "asset.asset.quiz.reward" defined on transaction',
                     this.id,
                     '.asset.asset.quiz.reward',
                     this.asset.quiz.reward,
-                    `Must be in the range of ${utils.convertBeddowsToLSK('1')}-100 LSQ (Array)`,
+                    `Must be in the range of ${utils.convertBeddowsToLSK('1')} to 100 LSK`,
                 )
             );
         }
 
         // ----------------------------
-        // Fee Check
+        // Number of people Field Check
         // ----------------------------
-        else if (this.fee <= 0 || myutils.getSummary(this.asset.quiz.reward) !== this.fee.toString()) {
+        else if (!myUtils.checkUtil.checkNumber(this.asset.quiz.num, '1', '100')) {
             errors.push(
                 new TransactionError(
-                    'Invalid "fee" defined on transaction',
+                    'Invalid "asset.asset.quiz.num" defined on transaction',
                     this.id,
-                    '.asset.asset.quiz.other.str',
-                    this.fee.toString(),
-                    'Must be equal to the total reward',
-                )
-            );
-        }
-
-        // ----------------------------
-        // Other Field Check
-        // ----------------------------
-        else if (!this.asset.quiz.other) {
-            return errors;
-        }
-
-        // ----------------------------
-        // String Field Check
-        // ----------------------------
-        else if (this.asset.quiz.other.str && !myutils.checkUtil.checkBytesLength(this.asset.quiz.other.str, 0, 256)) {
-            errors.push(
-                new TransactionError(
-                    'Invalid "asset.asset.quiz.other.str" defined on transaction',
-                    this.id,
-                    '.asset.asset.quiz.other.str',
-                    this.asset.quiz.other.str,
-                    'Must be in the range 0-256 bytes',
+                    '.asset.asset.quiz.num',
+                    this.asset.quiz.num,
+                    'Must be in the range of 1 to 100 LSQ (Array)',
                 )
             );
         }
@@ -146,14 +105,29 @@ class QuestionTransaction extends BaseTransaction {
         // ----------------------------
         // URL Field Check
         // ----------------------------
-        else if (this.asset.quiz.other.url && !myutils.checkUtil.checkUrl(this.asset.quiz.other.url)) {
+        else if (this.asset.quiz.url && !myUtils.checkUtil.checkUrl(this.asset.quiz.url)) {
             errors.push(
                 new TransactionError(
-                    'Invalid "asset.asset.quiz.other.url" defined on transaction',
+                    'Invalid "asset.asset.quiz.url" defined on transaction',
                     this.id,
-                    '.asset.asset.quiz.other.url',
-                    this.asset.quiz.other.url,
+                    '.asset.asset.quiz.url',
+                    this.asset.quiz.url,
                     'Must be a valid URL',
+                )
+            );
+        }
+
+        // ----------------------------
+        // Fee Check
+        // ----------------------------
+        else if (this.fee <= 0 || myUtils.mul(this.asset.quiz.reward, this.asset.quiz.num) !== this.fee.toString()) {
+            errors.push(
+                new TransactionError(
+                    'Invalid "fee" defined on transaction',
+                    this.id,
+                    '.fee',
+                    this.fee.toString(),
+                    'Must be equal to the reward * num',
                 )
             );
         }

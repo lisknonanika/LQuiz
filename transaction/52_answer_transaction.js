@@ -1,6 +1,5 @@
 const { BaseTransaction, TransactionError, constants } = require('@liskhq/lisk-transactions');
-const BigNum = require('@liskhq/bignum');
-const myutils = require('../utility');
+const myUtils = require('../utility');
 
 class AnswerTransaction extends BaseTransaction {
 
@@ -59,7 +58,7 @@ class AnswerTransaction extends BaseTransaction {
         // ----------------------------
         // Answer Field Check
         // ----------------------------
-        else if (!myutils.checkUtil.checkBytesLength(this.asset.quiz.answer, 64, 64)) {
+        else if (!myUtils.checkUtil.checkBytesLength(this.asset.quiz.answer, 64, 64)) {
             errors.push(
                 new TransactionError(
                     'Invalid "asset.quiz.answer" defined on transaction',
@@ -80,12 +79,15 @@ class AnswerTransaction extends BaseTransaction {
             return errors;
         }
         
+        // ----------------------------
+        // Question Transaction Check
+        // ----------------------------
         const questionTransaction = store.transaction.get(this.asset.data);
         if (!questionTransaction) {
             errors.push(new TransactionError('Question Transaction Not Found.', this.id));
             return errors;
         }
-        if (questionTransaction.senderId !== this.senderId) {
+        if (questionTransaction.senderId === this.senderId) {
             errors.push(new TransactionError('Can not answer own question.', this.id));
             return errors;
         }
@@ -94,45 +96,39 @@ class AnswerTransaction extends BaseTransaction {
             return errors;
         }
 
-        const sameTypeTransactions = store.transaction.data.filter(tx => tx.type === AnswerTransaction.TYPE && tx.asset.data === this.asset.data);
-        if (sameTypeTransactions.filter(tx => tx.senderId === this.senderId).length > 0) {
+        // ----------------------------
+        // Answer Transaction Check
+        // ----------------------------
+        const answerTransactions = store.transaction.data.filter(tx => tx.type === AnswerTransaction.TYPE && tx.asset.data === this.asset.data);
+        if (answerTransactions.filter(tx => tx.senderId === this.senderId).length > 0) {
             errors.push(new TransactionError('This question has already been answered.', this.id));
             return errors;
         }
-        if (sameTypeTransactions.length >= questionTransaction.asset.quiz.reward.length) {
+        if (answerTransactions.length >= questionTransaction.asset.quiz.num) {
             errors.push(new TransactionError('This question has reached the maximum number of answers.', this.id));
             return errors;
         }
-        
-        const reward = questionTransaction.asset.quiz.reward[sameTypeTransactions.length];
-        if (!reward) {
-            errors.push(new errors_1.TransactionError('Invalid reward', this.id));
+        if (questionTransaction.asset.quiz.reward !== this.asset.quiz.reward) {
+            errors.push(new TransactionError('Invalid reward', this.id));
             return errors;
         }
 
         const sender = store.account.get(this.senderId);
         
-        const afterBalance = new BigNum(sender.balance).add(new BigNum(reward));
-        if (afterBalance.gt(constants.MAX_TRANSACTION_AMOUNT)) {
-            errors.push(new errors_1.TransactionError('Invalid reward', this.id));
+        const afterBalance = myUtils.add(sender.balance, this.asset.quiz.reward);
+        if (afterBalance > constants.MAX_TRANSACTION_AMOUNT) {
+            errors.push(new TransactionError('Invalid reward', this.id));
             return errors;
         }
 
-        const asset = {
-            data: this.asset.data,
-            quiz: {
-                answer: this.asset.quiz.answer,
-                reward: reward
-            }
-        }
-        const newObj = { ...sender, balance: afterBalance.toString(), asset: asset };
+        const newObj = { ...sender, balance: afterBalance.toString(), asset: this.asset };
         store.account.set(sender.address, newObj);
         return [];
     }
 
     undoAsset(store) {
         const sender = store.account.get(this.senderId);
-        const afterBalance = new BigNum(sender.balance).sub(new BigNum(this.asset.quiz.reward));
+        const afterBalance = myUtils.sub(sender.balance, this.asset.quiz.reward);
         const oldObj = { ...sender, balance: afterBalance.toString(), asset: null };
         store.account.set(sender.address, oldObj);
         return [];
