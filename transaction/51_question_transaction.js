@@ -8,7 +8,7 @@ class QuestionTransaction extends BaseTransaction {
     }
 
     static get FEE () {
-        return 0;
+        return `${10 ** 7}`;
     };
 
     async prepare(store) {
@@ -120,7 +120,8 @@ class QuestionTransaction extends BaseTransaction {
         // ----------------------------
         // Fee Check
         // ----------------------------
-        else if (this.fee <= 0 || myUtils.mul(this.asset.quiz.reward, this.asset.quiz.num) !== this.fee.toString()) {
+        else if (this.fee <= 0 ||
+            myUtils.add(myUtils.mul(this.asset.quiz.reward, this.asset.quiz.num), QuestionTransaction.FEE) !== this.fee.toString()) {
             errors.push(
                 new TransactionError(
                     'Invalid "fee" defined on transaction',

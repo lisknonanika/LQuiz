@@ -1,9 +1,13 @@
 const BigNum = require('@liskhq/bignum');
 const { configDevnet } = require('../config');
 const checkUtil = require('./check');
+const verify = require('./verify');
+const request = require('./request');
 
 module.exports = {
     checkUtil,
+    verify,
+    request
 }
 
 module.exports.getTimestamp = (d) => {

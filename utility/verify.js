@@ -1,5 +1,5 @@
 var jwt = require('jsonwebtoken');
-var { api_config } = require('./config');
+var { api_config } = require('../config');
 
 module.exports = (req, res, next) => {
     const token = (req.session && req.session.token) || req.headers['x-access-token'];

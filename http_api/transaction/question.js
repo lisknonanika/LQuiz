@@ -1,8 +1,8 @@
 const { utils } = require('@liskhq/lisk-transactions');
 const cryptography = require('@liskhq/lisk-cryptography');
 const crypto = require('crypto');
-const myUtils = require('../../utility')
-const request = require('../../request');
+const myUtils = require('../../utility');
+const { checkUtil, request } = require('../../utility');
 const QuestionTransaction = require('../../transaction/51_question_transaction');
 
 module.exports.validator = async(req) => {
@@ -11,35 +11,35 @@ module.exports.validator = async(req) => {
     // ----------------------------
     // Question Field Check
     // ----------------------------
-    if (!myUtils.checkUtil.checkBytesLength(req.body.question, 1, 256)) {
+    if (!checkUtil.checkBytesLength(req.body.question, 1, 256)) {
         errors.push('A question must be in the range 1-256 bytes');
     }
 
     // ----------------------------
     // Answer Field Check
     // ----------------------------
-    if (!myUtils.checkUtil.checkBytesLength(req.body.answer, 1, 256)) {
+    if (!checkUtil.checkBytesLength(req.body.answer, 1, 256)) {
         errors.push('A answer must be in the range 1-256 bytes');
     }
 
     // ----------------------------
     // Reward Field Check
     // ----------------------------
-    if(!myUtils.checkUtil.checkNumber(req.body.reward, utils.convertBeddowsToLSK('1'), '100')) {
+    if(!checkUtil.checkNumber(req.body.reward, utils.convertBeddowsToLSK('1'), '100')) {
         errors.push(`A reward must be in the range of ${utils.convertBeddowsToLSK('1')} to 100 LSK`);
     }
 
     // ----------------------------
     // Number of people Field Check
     // ----------------------------
-    if(req.body.num && !myUtils.checkUtil.checkNumber(req.body.num, '1', '100')) {
+    if(req.body.num && !checkUtil.checkNumber(req.body.num, '1', '100')) {
         errors.push(`A num must be in the range of 1 to 100`);
     }
 
     // ----------------------------
     // URL Field Check
     // ----------------------------
-    if (req.body.url && !myUtils.checkUtil.checkUrl(req.body.url)) {
+    if (req.body.url && !checkUtil.checkUrl(req.body.url)) {
         errors.push('A URL must be a valid URL');
     }
 

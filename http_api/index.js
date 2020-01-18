@@ -3,8 +3,7 @@ const bodyParser = require('body-parser');
 const jwt = require('jsonwebtoken');
 const helmet = require('helmet');
 const { api_config } = require('../config');
-const request = require('../request');
-const verify = require('../verify');
+const { request, verify } = require('../utility');
 
 const question = require('./transaction/question');
 const answer = require('./transaction/answer');
@@ -16,7 +15,7 @@ app.use(bodyParser.json());
 app.use(helmet());
 
 const router = express.Router();
-app.use('/lquiz/api', router);
+app.use('/api', router);
 
 /**
  * auth

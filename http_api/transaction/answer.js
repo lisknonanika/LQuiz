@@ -1,7 +1,8 @@
 const cryptography = require('@liskhq/lisk-cryptography');
 const crypto = require('crypto');
-const myUtils = require('../../utility')
-const request = require('../../request');
+const myUtils = require('../../utility');
+const { checkUtil, request } = require('../../utility');
+const db = require('../db')
 const AnswerTransaction = require('../../transaction/52_answer_transaction');
 
 module.exports.validator = async(req) => {
@@ -17,7 +18,7 @@ module.exports.validator = async(req) => {
     // ----------------------------
     // Answer Field Check
     // ----------------------------
-    if (!myUtils.checkUtil.checkBytesLength(req.body.answer, 1, 256)) {
+    if (!checkUtil.checkBytesLength(req.body.answer, 1, 256)) {
         errors.push('A answer must be in the range 1-256 bytes');
     }
 
@@ -47,7 +48,7 @@ module.exports.validator = async(req) => {
     // ----------------------------
     // Question Transaction Check
     // ----------------------------
-    let questionTransactions = [];
+    let questionTransactions = {};
     try {
         questionTransactions = await request({
             method: 'GET',
@@ -75,14 +76,15 @@ module.exports.validator = async(req) => {
     // ----------------------------
     // Answer Transaction Check
     // ----------------------------
-    let answerTransactions = [];
+    let answerTransactions = {};
     try {
-        answerTransactions = await request({
-            method: 'GET',
-            url: `http://127.0.0.1:4000/api/transactions?data=${req.body.id}&type=52`,
-            json: true
-        });
-        if (answerTransactions.data && answerTransactions.data.length > 0) {
+        answerTransactions = await db.findAnswerSenderIdByTargetId(req.body.id)
+        if (!answerTransactions.success) {
+            errors.push('Failed to get answer data');
+            return errors;
+        }
+
+        if (!answerTransactions.data || answerTransactions.data.length > 0) {
             if (answerTransactions.data.filter(tx => tx.senderId === address).length > 0) {
                 errors.push('This question has already been answered.');
                 return errors;
