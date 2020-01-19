@@ -96,5 +96,5 @@ router.post('/answer', verify, (req, res) => {
     });
 });
 
-app.listen(40001);
+app.listen(30001);
 console.log('http_api start');

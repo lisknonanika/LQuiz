@@ -33,3 +33,41 @@ module.exports.findAnswerSenderIdByTargetId = async (targetId) => {
         client.release();
     }
 }
+
+module.exports.findQuestion = async (isOpen, offset) => {
+    let client = undefined;
+    try {
+        client = await pool.connect();
+        const query = `
+            SELECT trs51."id",
+                   trs51."senderId",
+                   trs51."timestamp",
+                   (trs51."asset" -> 'quiz' ->> 'question') as question,
+                   (trs51."asset" -> 'quiz' ->> 'reward')::INT as reward,
+                   (trs51."asset" -> 'quiz' ->> 'num')::INT as num,
+                   (SELECT count(*)
+                      FROM trs as trs52
+                     WHERE trs52."type" = 52
+                       AND trs52."asset" ->> 'data' = trs51."id")::INT as answered
+              FROM trs as trs51
+             WHERE trs51."type" = 51
+               AND (trs51."asset" -> 'quiz' ->> 'num')::INT ${isOpen? '>': '<='} (
+                    SELECT count(*)
+                      FROM trs as trs52
+                     WHERE trs52."type" = 52
+                       AND trs52."asset" ->> 'data' = trs51."id"
+            )
+            ORDER BY timestamp DESC
+            LIMIT 100 OFFSET $1
+        `;
+        const result = await client.query(query, [offset]);
+        return {success: true, data: result.rows}
+
+    } catch(err) {
+        console.log(err)
+        return {success: false}
+
+    } finally {
+        client.release();
+    }
+}
