@@ -78,7 +78,7 @@ module.exports.validator = async(req) => {
     // ----------------------------
     let answerTransactions = {};
     try {
-        answerTransactions = await db.findAnswerSenderIdByTargetId(req.body.id)
+        answerTransactions = await db.findAnswerByTargetId(req.body.id)
         if (!answerTransactions.success) {
             errors.push('Failed to get answer data');
             return errors;
