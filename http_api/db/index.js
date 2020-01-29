@@ -10,8 +10,8 @@ const pool = new Pool({
     port: configDevnet.components.storage.port
 });
 
-module.exports.findAnswerByTargetId = async (targetId) => {
-    if (!targetId) return {success: false, err: 'TargetId is required'}
+module.exports.findAnswerByQuestionId = async (questionId) => {
+    if (!questionId) return {success: false, err: 'questionId is required'}
 
     let client = undefined;
     try {
@@ -22,7 +22,7 @@ module.exports.findAnswerByTargetId = async (targetId) => {
              WHERE trs."type" = 52
                AND trs."asset" ->> "data" = $1
         `;
-        const result = await client.query(query, [targetId]);
+        const result = await client.query(query, [questionId]);
         return {success: true, data: result.rows}
 
     } catch(err) {
