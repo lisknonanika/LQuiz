@@ -10,14 +10,14 @@ const pool = new Pool({
     port: configDevnet.components.storage.port
 });
 
-module.exports.findAnswerSenderIdByTargetId = async (targetId) => {
+module.exports.findAnswerByTargetId = async (targetId) => {
     if (!targetId) return {success: false, err: 'TargetId is required'}
 
     let client = undefined;
     try {
         client = await pool.connect();
         const query = `
-            SELECT trs."senderId"
+            SELECT trs."id", trs."senderId"
               FROM trs
              WHERE trs."type" = 52
                AND trs."asset" ->> "data" = $1
