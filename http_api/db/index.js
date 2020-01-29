@@ -11,7 +11,7 @@ const pool = new Pool({
 });
 
 module.exports.findAnswerByQuestionId = async (questionId) => {
-    if (!questionId) return {success: false, err: 'questionId is required'}
+    if (!questionId) return {success: false}
 
     let client = undefined;
     try {
