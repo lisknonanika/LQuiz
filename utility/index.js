@@ -1,17 +1,15 @@
-const BigNum = require('@liskhq/bignum');
-const { configDevnet } = require('../config');
-const checkUtil = require('./check');
-const verify = require('./verify');
-const request = require('./request');
+const BigNum = require("@liskhq/bignum");
+const { configDevnet } = require("../config");
+const checkUtil = require("./check");
+const request = require("./request");
 
 module.exports = {
     checkUtil,
-    verify,
     request
 }
 
 module.exports.getTimestamp = (d) => {
-    if (typeof d !== 'number') d = 0;
+    if (typeof d !== "number") d = 0;
     let now = new Date();
     now.setDate(now.getDate() + d);
     const millisSinceEpoc = now.getTime() - Date.parse(configDevnet.app.genesisConfig.EPOCH_TIME);

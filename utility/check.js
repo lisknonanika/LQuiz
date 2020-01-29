@@ -1,4 +1,4 @@
-const url = require('url');
+const url = require("url");
 
 module.exports.checkBytesLength = (val, min, max) => {
     if (Array.isArray(val)) {
@@ -7,7 +7,7 @@ module.exports.checkBytesLength = (val, min, max) => {
         }
         return true;
     }
-    if (typeof val !== 'string') return false;
+    if (typeof val !== "string") return false;
 
     const l = Buffer.byteLength(val);
     if (min !== undefined && (isNaN(+min) || l < +min)) return false;
@@ -22,9 +22,9 @@ module.exports.checkUrl = (val) => {
         }
         return true;
     }
-    if (typeof val !== 'string') return false;
+    if (typeof val !== "string") return false;
     const r = url.parse(val);
-    return r.protocol && (r.protocol === 'http:' || r.protocol === 'https:');
+    return r.protocol && (r.protocol === "http:" || r.protocol === "https:");
 }
 
 module.exports.checkNumber = (val, min, max) => {
@@ -34,7 +34,7 @@ module.exports.checkNumber = (val, min, max) => {
         }
         return true;
     }
-    if (typeof val !== 'number' && isNaN(+val)) return false;
+    if (typeof val !== "number" && isNaN(+val)) return false;
     if (min !== undefined && (isNaN(+min) || +val < +min)) return false;
     if (max !== undefined && (isNaN(+max) || +val > +max)) return false;
     return true;

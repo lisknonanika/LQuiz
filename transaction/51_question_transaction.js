@@ -1,5 +1,5 @@
-const { BaseTransaction, TransactionError, utils } = require('@liskhq/lisk-transactions');
-const myUtils = require('../utility');
+const { BaseTransaction, TransactionError, utils } = require("@liskhq/lisk-transactions");
+const myUtils = require("../utility");
 
 class QuestionTransaction extends BaseTransaction {
 
@@ -39,7 +39,7 @@ class QuestionTransaction extends BaseTransaction {
         // Quiz Field Check
         // ----------------------------
         if (!this.asset.quiz) {
-            errors.push(new TransactionError('Required parameter "asset.quiz" is not found', this.id));
+            errors.push(new TransactionError("Required parameter 'asset.quiz' is not found", this.id));
         }
 
         // ----------------------------
@@ -48,11 +48,11 @@ class QuestionTransaction extends BaseTransaction {
         else if (!myUtils.checkUtil.checkBytesLength(this.asset.quiz.question, 1, 256)) {
             errors.push(
                 new TransactionError(
-                    'Invalid "asset.quiz.question" defined on transaction',
+                    "Invalid 'asset.quiz.question' defined on transaction",
                     this.id,
-                    '.asset.quiz.question',
+                    ".asset.quiz.question",
                     this.asset.quiz.question,
-                    'Must be in the range 1-256 bytes',
+                    "Must be in the range 1-256 bytes",
                 )
             );
         }
@@ -63,11 +63,11 @@ class QuestionTransaction extends BaseTransaction {
         else if (!myUtils.checkUtil.checkBytesLength(this.asset.quiz.answer, 64, 64)) {
             errors.push(
                 new TransactionError(
-                    'Invalid "asset.quiz.answer" defined on transaction',
+                    "Invalid 'asset.quiz.answer' defined on transaction",
                     this.id,
-                    '.asset.quiz.answer',
+                    ".asset.quiz.answer",
                     this.asset.quiz.answer,
-                    'Must be a SHA-256 hash',
+                    "Must be a SHA-256 hash",
                 )
             );
         }
@@ -75,14 +75,14 @@ class QuestionTransaction extends BaseTransaction {
         // ----------------------------
         // Reward Field Check
         // ----------------------------
-        else if (!myUtils.checkUtil.checkNumber(this.asset.quiz.reward, '1', utils.convertLSKToBeddows('100'))) {
+        else if (!myUtils.checkUtil.checkNumber(this.asset.quiz.reward, "1", utils.convertLSKToBeddows("100"))) {
             errors.push(
                 new TransactionError(
-                    'Invalid "asset.asset.quiz.reward" defined on transaction',
+                    "Invalid 'asset.asset.quiz.reward' defined on transaction",
                     this.id,
-                    '.asset.asset.quiz.reward',
+                    ".asset.asset.quiz.reward",
                     this.asset.quiz.reward,
-                    `Must be in the range of ${utils.convertBeddowsToLSK('1')} to 100 LSK`,
+                    `Must be in the range of ${utils.convertBeddowsToLSK("1")} to 100 LSK`,
                 )
             );
         }
@@ -90,14 +90,14 @@ class QuestionTransaction extends BaseTransaction {
         // ----------------------------
         // Number of people Field Check
         // ----------------------------
-        else if (!myUtils.checkUtil.checkNumber(this.asset.quiz.num, '1', '100')) {
+        else if (!myUtils.checkUtil.checkNumber(this.asset.quiz.num, "1", "100")) {
             errors.push(
                 new TransactionError(
-                    'Invalid "asset.asset.quiz.num" defined on transaction',
+                    "Invalid 'asset.asset.quiz.num' defined on transaction",
                     this.id,
-                    '.asset.asset.quiz.num',
+                    ".asset.asset.quiz.num",
                     this.asset.quiz.num,
-                    'Must be in the range of 1 to 100 LSQ (Array)',
+                    "Must be in the range of 1 to 100 LSQ (Array)",
                 )
             );
         }
@@ -108,11 +108,11 @@ class QuestionTransaction extends BaseTransaction {
         else if (this.asset.quiz.url && !myUtils.checkUtil.checkUrl(this.asset.quiz.url)) {
             errors.push(
                 new TransactionError(
-                    'Invalid "asset.asset.quiz.url" defined on transaction',
+                    "Invalid 'asset.asset.quiz.url' defined on transaction",
                     this.id,
-                    '.asset.asset.quiz.url',
+                    ".asset.asset.quiz.url",
                     this.asset.quiz.url,
-                    'Must be a valid URL',
+                    "Must be a valid URL",
                 )
             );
         }
@@ -124,11 +124,11 @@ class QuestionTransaction extends BaseTransaction {
             myUtils.add(myUtils.mul(this.asset.quiz.reward, this.asset.quiz.num), QuestionTransaction.FEE) !== this.fee.toString()) {
             errors.push(
                 new TransactionError(
-                    'Invalid "fee" defined on transaction',
+                    "Invalid 'fee' defined on transaction",
                     this.id,
-                    '.fee',
+                    ".fee",
                     this.fee.toString(),
-                    'Must be equal to the reward * num',
+                    "Must be equal to the reward * num",
                 )
             );
         }

@@ -1,12 +1,11 @@
-const express = require('express');
-const bodyParser = require('body-parser');
-const helmet = require('helmet');
-const { api_config } = require('../config');
-const { request, checkUtil } = require('../utility');
+const express = require("express");
+const bodyParser = require("body-parser");
+const helmet = require("helmet");
+const { request, checkUtil } = require("../utility");
 
-const db = require('./db')
-const question = require('./transaction/question');
-const answer = require('./transaction/answer');
+const db = require("./db")
+const question = require("./transaction/question");
+const answer = require("./transaction/answer");
 
 const app = express();
 app.use(bodyParser.urlencoded({extended: true}));
@@ -14,12 +13,12 @@ app.use(bodyParser.json());
 app.use(helmet());
 
 const router = express.Router();
-app.use('/api', router);
+app.use("/api", router);
 
 /**
  * Question Transaction
  */
-router.post('/question', (req, res) => {
+router.post("/question", (req, res) => {
     (async () => {
         // Validation
         const errors = await question.validator(req);
@@ -33,9 +32,9 @@ router.post('/question', (req, res) => {
 
         // POST
         const data = await request({
-            method: 'POST',
-            url: 'http://127.0.0.1:4000/api/transactions',
-            headers: {'content-type': 'application/json'},
+            method: "POST",
+            url: "http://127.0.0.1:4000/api/transactions",
+            headers: {"content-type": "application/json"},
             body: tx,
             json: true
         });
@@ -50,7 +49,7 @@ router.post('/question', (req, res) => {
 /**
  * Answer Transaction
  */
-router.post('/answer', (req, res) => {
+router.post("/answer", (req, res) => {
     (async () => {
         // Validation
         const errors = await answer.validator(req);
@@ -64,9 +63,9 @@ router.post('/answer', (req, res) => {
 
         // POST
         const data = await request({
-            method: 'POST',
-            url: 'http://127.0.0.1:4000/api/transactions',
-            headers: {'content-type': 'application/json'},
+            method: "POST",
+            url: "http://127.0.0.1:4000/api/transactions",
+            headers: {"content-type": "application/json"},
             body: tx,
             json: true
         });
@@ -82,18 +81,18 @@ router.post('/answer', (req, res) => {
  * Get Answers
  * query: qid(required)
  */
-router.get('/answers', (req, res) => {
+router.get("/answers", (req, res) => {
     (async () => {
         // Validation
         if (!req.query.qid) {
-            res.json({success: false, messages: 'Parameter "qid" is required.'});
+            res.json({success: false, messages: "Parameter 'qid' is required."});
             return;
         }
 
         // GET
         const answerTransactions = await db.findAnswerByQuestionId(req.query.qid)
         if (!answerTransactions.success) {
-            res.json({success: false, messages: 'Failed to get answer data'});
+            res.json({success: false, messages: "Failed to get answer data"});
             return;
         }
 
@@ -108,13 +107,13 @@ router.get('/answers', (req, res) => {
  * Get Questions
  * query: open, userId, offset, sortKey, sortType
  */
-router.get('/questions', (req, res) => {
+router.get("/questions", (req, res) => {
     (async () => {
         let isOpen = true;
         let params = {
-            senderId: '0L',
+            senderId: "0L",
             offset: 0,
-            sortKey: 'timestamp',
+            sortKey: "timestamp",
             sortType: 0,
         }
         
@@ -128,7 +127,7 @@ router.get('/questions', (req, res) => {
         // GET
         const questionTransactions = await db.findQuestion(isOpen, params)
         if (!questionTransactions.success) {
-            res.json({success: false, messages: 'Failed to get question data'});
+            res.json({success: false, messages: "Failed to get question data"});
             return;
         }
 
@@ -140,4 +139,4 @@ router.get('/questions', (req, res) => {
 });
 
 app.listen(30001);
-console.log('http_api start');
+console.log("http_api start");

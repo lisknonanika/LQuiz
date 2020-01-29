@@ -1,5 +1,5 @@
-const { BaseTransaction, TransactionError, constants } = require('@liskhq/lisk-transactions');
-const myUtils = require('../utility');
+const { BaseTransaction, TransactionError, constants } = require("@liskhq/lisk-transactions");
+const myUtils = require("../utility");
 
 class AnswerTransaction extends BaseTransaction {
 
@@ -18,7 +18,7 @@ class AnswerTransaction extends BaseTransaction {
             },
         ]);
 
-        store.entities.Transaction.addFilter('target_id', 'FILTER_TYPE_CUSTOM', {
+        store.entities.Transaction.addFilter("target_id", "FILTER_TYPE_CUSTOM", {
             condition: 'trs.asset @> \'{ "data": "${target_id:value}" }\'::jsonb',
         });
 
@@ -45,14 +45,14 @@ class AnswerTransaction extends BaseTransaction {
         // Data Field Check
         // ----------------------------
         if (!this.asset.data) {
-            errors.push(new TransactionError('Required parameter "asset.data" is not found', this.id));
+            errors.push(new TransactionError("Required parameter 'asset.data' is not found", this.id));
         }
         
         // ----------------------------
         // Quiz Field Check
         // ----------------------------
         else if (!this.asset.quiz) {
-            errors.push(new TransactionError('Required parameter "asset.quiz" is not found', this.id));
+            errors.push(new TransactionError("Required parameter 'asset.quiz' is not found", this.id));
         }
 
         // ----------------------------
@@ -61,11 +61,11 @@ class AnswerTransaction extends BaseTransaction {
         else if (!myUtils.checkUtil.checkBytesLength(this.asset.quiz.answer, 64, 64)) {
             errors.push(
                 new TransactionError(
-                    'Invalid "asset.quiz.answer" defined on transaction',
+                    "Invalid 'asset.quiz.answer' defined on transaction",
                     this.id,
-                    '.asset.quiz.answer',
+                    ".asset.quiz.answer",
                     this.asset.quiz.answer,
-                    'Must be a SHA-256 hash',
+                    "Must be a SHA-256 hash",
                 )
             );
         }
@@ -75,7 +75,7 @@ class AnswerTransaction extends BaseTransaction {
     applyAsset(store) {
         const errors = [];
         if (!store.transaction.data || store.transaction.data.length === 0) {
-            errors.push(new TransactionError('Question Transaction Not Found.', this.id));
+            errors.push(new TransactionError("Question Transaction Not Found.", this.id));
             return errors;
         }
         
@@ -84,15 +84,15 @@ class AnswerTransaction extends BaseTransaction {
         // ----------------------------
         const questionTransaction = store.transaction.get(this.asset.data);
         if (!questionTransaction) {
-            errors.push(new TransactionError('Question Transaction Not Found.', this.id));
+            errors.push(new TransactionError("Question Transaction Not Found.", this.id));
             return errors;
         }
         if (questionTransaction.senderId === this.senderId) {
-            errors.push(new TransactionError('Can not answer own question.', this.id));
+            errors.push(new TransactionError("Can not answer own question.", this.id));
             return errors;
         }
         if (questionTransaction.asset.quiz.answer !== this.asset.quiz.answer) {
-            errors.push(new TransactionError('Answer missmatch.', this.id));
+            errors.push(new TransactionError("Answer missmatch.", this.id));
             return errors;
         }
 
@@ -101,15 +101,15 @@ class AnswerTransaction extends BaseTransaction {
         // ----------------------------
         const answerTransactions = store.transaction.data.filter(tx => tx.type === AnswerTransaction.TYPE && tx.asset.data === this.asset.data);
         if (answerTransactions.filter(tx => tx.senderId === this.senderId).length > 0) {
-            errors.push(new TransactionError('This question has already been answered.', this.id));
+            errors.push(new TransactionError("This question has already been answered.", this.id));
             return errors;
         }
         if (answerTransactions.length >= questionTransaction.asset.quiz.num) {
-            errors.push(new TransactionError('This question has reached the maximum number of answers.', this.id));
+            errors.push(new TransactionError("This question has reached the maximum number of answers.", this.id));
             return errors;
         }
         if (questionTransaction.asset.quiz.reward !== this.asset.quiz.reward) {
-            errors.push(new TransactionError('Invalid reward', this.id));
+            errors.push(new TransactionError("Invalid reward", this.id));
             return errors;
         }
 
@@ -117,7 +117,7 @@ class AnswerTransaction extends BaseTransaction {
         
         const afterBalance = myUtils.add(sender.balance, this.asset.quiz.reward);
         if (afterBalance > constants.MAX_TRANSACTION_AMOUNT) {
-            errors.push(new TransactionError('Invalid reward', this.id));
+            errors.push(new TransactionError("Invalid reward", this.id));
             return errors;
         }
 
