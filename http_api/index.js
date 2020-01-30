@@ -6,6 +6,7 @@ const { request, checkUtil } = require("../utility");
 const db = require("./db")
 const question = require("./transaction/question");
 const answer = require("./transaction/answer");
+const faucet = require("./transaction/faucet");
 
 const app = express();
 app.use(bodyParser.urlencoded({extended: true}));
@@ -60,6 +61,37 @@ router.post("/answer", (req, res) => {
 
         // Create Transactino
         const tx = answer.createTransaction(req);
+
+        // POST
+        const data = await request({
+            method: "POST",
+            url: "http://127.0.0.1:4000/api/transactions",
+            headers: {"content-type": "application/json"},
+            body: tx,
+            json: true
+        });
+
+        res.json({success: true, response: data});
+
+    })().catch((err) => {
+        res.json({success: false, err: err});
+    });
+});
+
+/**
+ * Faucet Transaction
+ */
+router.post("/faucet", (req, res) => {
+    (async () => {
+        // Validation
+        const errors = await faucet.validator(req);
+        if (errors.length > 0) {
+            res.json({success: false, messages: errors});
+            return;
+        }
+
+        // Create Transactino
+        const tx = faucet.createTransaction(req);
 
         // POST
         const data = await request({

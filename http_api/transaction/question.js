@@ -57,7 +57,7 @@ module.exports.validator = async(req) => {
     let address = "";
     try {
         address = cryptography.getAddressFromPassphrase(req.body.passphrase);
-        if (address !== req.decoded.address) {
+        if (address !== req.body.address) {
             errors.push("Incorrect passphrase");
             return errors;
         }
