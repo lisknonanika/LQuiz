@@ -110,25 +110,36 @@ router.post("/faucet", (req, res) => {
 });
 
 /**
- * Get Answers
- * query: qid(required)
+ * Get Question
+ * query: offset, id or senderId
  */
-router.get("/answers", (req, res) => {
+router.get("/question", (req, res) => {
     (async () => {
-        // Validation
-        if (!req.query.qid) {
-            res.json({success: false, messages: "Parameter 'qid' is required."});
-            return;
+        let offset = 0;
+        let params = {
+            id: "",
+            senderId: ""
         }
 
+        // Check Params
+        if (!req.query.id && !req.query.senderId) {
+            res.json({success: false, messages: "Parameter 'id' or 'senderId' is required"});
+            return;
+        }
+        
+        // Set Params
+        if (req.query.id) params.id = req.query.id;
+        if (req.query.senderId) params.senderId = req.query.senderId;
+        if (req.query.offset && checkUtil.checkNumber(req.query.offset)) offset = +req.query.offset;
+        
         // GET
-        const answerTransactions = await db.findAnswerByQuestionId(req.query.qid)
-        if (!answerTransactions.success) {
-            res.json({success: false, messages: "Failed to get answer data"});
+        const trx = await db.findQuestion(params, offset)
+        if (!trx.success) {
+            res.json({success: false, messages: "Failed to get question data"});
             return;
         }
 
-        res.json({success: true, response: answerTransactions.data});
+        res.json({success: true, response: trx.data});
 
     })().catch((err) => {
         res.json({success: false, err: err});
@@ -136,12 +147,50 @@ router.get("/answers", (req, res) => {
 });
 
 /**
- * Get Questions
- * query: open, userId, offset, sortKey, sortType
+ * Get Answer
+ * query: offset, id or senderId or qid
  */
-router.get("/questions", (req, res) => {
+router.get("/answer", (req, res) => {
     (async () => {
-        let isOpen = true;
+        let offset = 0;
+        let params = {
+            id: "",
+            senderId: "",
+            questionId: ""
+        }
+
+        // Check Params
+        if (!req.query.id && !req.query.senderId && !req.query.qid) {
+            res.json({success: false, messages: "Parameter 'id' or 'senderId' or 'qid' is required"});
+            return;
+        }
+        
+        // Set Params
+        if (req.query.id) params.id = req.query.id;
+        if (req.query.senderId) params.senderId = req.query.senderId;
+        if (req.query.qid) params.questionId = req.query.qid;
+        if (req.query.offset && checkUtil.checkNumber(req.query.offset)) offset = +req.query.offset;
+
+        // GET
+        const trx = await db.findAnswer(params, offset)
+        if (!trx.success) {
+            res.json({success: false, messages: "Failed to get answer data"});
+            return;
+        }
+
+        res.json({success: true, response: trx.data});
+
+    })().catch((err) => {
+        res.json({success: false, err: err});
+    });
+});
+
+/**
+ * Get Open Question
+ * query: userId, offset, sortKey, sortType
+ */
+router.get("/oepn-question", (req, res) => {
+    (async () => {
         let params = {
             senderId: "0L",
             offset: 0,
@@ -150,20 +199,52 @@ router.get("/questions", (req, res) => {
         }
         
         // Set Params
-        if (req.query.open && req.query.open == "0") isOpen = false;
         if (req.query.userId) params.senderId = req.query.userId;
         if (req.query.offset && checkUtil.checkNumber(req.query.offset)) params.offset = +req.query.offset;
         if (req.query.sortKey) params.sortKey = req.query.sortKey;
         if (req.query.sortType && req.query.sortType != "0") params.sortType = 1;
         
         // GET
-        const questionTransactions = await db.findQuestion(isOpen, params)
-        if (!questionTransactions.success) {
+        const trx = await db.findOpenCloseQuestion(true, params)
+        if (!trx.success) {
             res.json({success: false, messages: "Failed to get question data"});
             return;
         }
 
-        res.json({success: true, response: questionTransactions.data});
+        res.json({success: true, response: trx.data});
+
+    })().catch((err) => {
+        res.json({success: false, err: err});
+    });
+});
+
+/**
+ * Get Close Question
+ * query: userId, offset, sortKey, sortType
+ */
+router.get("/close-question", (req, res) => {
+    (async () => {
+        let params = {
+            senderId: "0L",
+            offset: 0,
+            sortKey: "timestamp",
+            sortType: 0,
+        }
+        
+        // Set Params
+        if (req.query.userId) params.senderId = req.query.userId;
+        if (req.query.offset && checkUtil.checkNumber(req.query.offset)) params.offset = +req.query.offset;
+        if (req.query.sortKey) params.sortKey = req.query.sortKey;
+        if (req.query.sortType && req.query.sortType != "0") params.sortType = 1;
+        
+        // GET
+        const trx = await db.findOpenCloseQuestion(false, params)
+        if (!trx.success) {
+            res.json({success: false, messages: "Failed to get question data"});
+            return;
+        }
+
+        res.json({success: true, response: trx.data});
 
     })().catch((err) => {
         res.json({success: false, err: err});

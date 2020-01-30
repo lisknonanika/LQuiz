@@ -35,7 +35,8 @@ class AnswerTransaction extends BaseTransaction {
     /**
      * data: String,
      * quiz: {
-     *     answer: String
+     *     answer: String,
+     *     reward: String
      * }
      */
     validateAsset() {
@@ -66,6 +67,21 @@ class AnswerTransaction extends BaseTransaction {
                     ".asset.quiz.answer",
                     this.asset.quiz.answer,
                     "Must be a SHA-256 hash",
+                )
+            );
+        }
+
+        // ----------------------------
+        // Reward Field Check
+        // ----------------------------
+        else if (!myUtils.checkUtil.checkNumber(this.asset.quiz.reward, "1", utils.convertLSKToBeddows("100"))) {
+            errors.push(
+                new TransactionError(
+                    "Invalid 'asset.quiz.reward' defined on transaction",
+                    this.id,
+                    ".asset.quiz.reward",
+                    this.asset.quiz.reward,
+                    `Must be in the range of ${utils.convertBeddowsToLSK("1")} to 100 LSK`,
                 )
             );
         }
@@ -109,7 +125,7 @@ class AnswerTransaction extends BaseTransaction {
             return errors;
         }
         if (questionTransaction.asset.quiz.reward !== this.asset.quiz.reward) {
-            errors.push(new TransactionError("Invalid reward", this.id));
+            errors.push(new TransactionError("Reward missmatch", this.id));
             return errors;
         }
 

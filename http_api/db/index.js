@@ -10,19 +10,44 @@ const pool = new Pool({
     port: configDevnet.components.storage.port
 });
 
-module.exports.findAnswerByQuestionId = async (questionId) => {
-    if (!questionId) return {success: false}
+module.exports.findQuestion = async (params, offset) => {
+    if (!params || (!params.id && !params.senderId)) return {success: false}
+    if (!offset) offset = 0;
 
     let client = undefined;
     try {
         client = await pool.connect();
+
+        let where = "";
+        let conditionValue = "";
+        if (params.id) {
+            where = `trs51."id"`;
+            conditionValue = params.id;
+        } else if (params.senderId) {
+            where = `trs51."senderId"`;
+            conditionValue = params.senderId;
+        }
+
         const query = `
-            SELECT trs."id", trs."senderId"
-              FROM trs
-             WHERE trs."type" = 52
-               AND trs."asset" ->> 'data' = $1
+            SELECT trs51."id",
+                   trs51."senderId",
+                   trs51."timestamp",
+                   (trs51."asset" -> 'quiz' ->> 'question') as question,
+                   (trs51."asset" -> 'quiz' ->> 'url') as url,
+                   (trs51."asset" -> 'quiz' ->> 'answer') as answer,
+                   (trs51."asset" -> 'quiz' ->> 'reward') as reward,
+                   (trs51."asset" -> 'quiz' ->> 'num')::INT as num,
+                   (SELECT count(*)
+                      FROM trs as trs52
+                     WHERE trs52."type" = 52
+                       AND trs52."asset" ->> 'data' = trs51."id")::INT as answered
+              FROM trs as trs51
+             WHERE trs51."type" = 51
+               AND ${where} = $1
+             ORDER BY timestamp DESC
+             LIMIT 100 OFFSET ${offset}
         `;
-        const result = await client.query(query, [questionId]);
+        const result = await client.query(query, [conditionValue]);
         return {success: true, data: result.rows}
 
     } catch(err) {
@@ -34,7 +59,52 @@ module.exports.findAnswerByQuestionId = async (questionId) => {
     }
 }
 
-module.exports.findQuestion = async (isOpen, params) => {
+module.exports.findAnswer = async (params, offset) => {
+    if (!params || (!params.id && !params.senderId && !params.questionId)) return {success: false}
+    if (!offset) offset = 0;
+
+    let client = undefined;
+    try {
+        client = await pool.connect();
+
+        let where = "";
+        let conditionValue = "";
+        if (params.id) {
+            where = `trs."id"`;
+            conditionValue = params.id;
+        } else if (params.senderId) {
+            where = `trs."senderId"`;
+            conditionValue = params.senderId;
+        } else if (params.questionId) {
+            where = `trs."asset" ->> 'data'`;
+            conditionValue = params.questionId;
+        }
+
+        const query = `
+            SELECT trs."id",
+                   trs."senderId",
+                   trs."timestamp",
+                   trs."asset" ->> 'data' as questionId,
+                   trs."asset" -> 'quiz' ->> 'reward' as reward
+              FROM trs
+             WHERE trs."type" = 52
+               AND ${where} = $1
+             ORDER BY timestamp DESC
+             LIMIT 100 OFFSET ${offset}
+        `;
+        const result = await client.query(query, [conditionValue]);
+        return {success: true, data: result.rows}
+
+    } catch(err) {
+        console.log(err)
+        return {success: false}
+
+    } finally {
+        client.release();
+    }
+}
+
+module.exports.findOpenCloseQuestion = async (isOpen, params) => {
     let client = undefined;
     try {
         // set senderId (default 0L)
@@ -60,7 +130,9 @@ module.exports.findQuestion = async (isOpen, params) => {
                    trs51."senderId",
                    trs51."timestamp",
                    (trs51."asset" -> 'quiz' ->> 'question') as question,
-                   (trs51."asset" -> 'quiz' ->> 'reward')::INT as reward,
+                   (trs51."asset" -> 'quiz' ->> 'url') as url,
+                   (trs51."asset" -> 'quiz' ->> 'answer') as answer,
+                   (trs51."asset" -> 'quiz' ->> 'reward') as reward,
                    (trs51."asset" -> 'quiz' ->> 'num')::INT as num,
                    (SELECT count(*)
                       FROM trs as trs52
@@ -75,19 +147,20 @@ module.exports.findQuestion = async (isOpen, params) => {
                            WHERE trs52."type" = 52
                              AND trs52."asset" ->> 'data' = trs51."id"
                        )
-                       ${isOpen? "AND NOT EXISTS": "OR EXISTS"} (
+                       ${isOpen? "AND": "OR"} trs51."senderId" ${isOpen? "<>": "="} $1
+                       ${isOpen? "AND NOT": "OR"} EXISTS (
                            SELECT 1
                              FROM trs as trs52
                             WHERE trs52."type" = 52
                               AND trs52."asset" ->> 'data' = trs51."id"
-                              AND trs52."senderId" = $1
+                              AND trs52."senderId" = $2
                             LIMIT 1
                        )
                    )
             ORDER BY ${sortKey}
             LIMIT 100 OFFSET ${offset}
         `;
-        const result = await client.query(query, [senderId]);
+        const result = await client.query(query, [senderId, senderId]);
         return {success: true, data: result.rows}
 
     } catch(err) {

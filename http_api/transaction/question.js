@@ -108,7 +108,8 @@ module.exports.validator = async(req) => {
  *         answer: String,
  *         reward: String,
  *         num: Number,
- *         url: String
+ *         url: String,
+ *         valid: Boolean
  *     }
  * },
  * fee: String,
@@ -123,7 +124,8 @@ module.exports.createTransaction = (req) => {
                 answer: "",
                 reward: "0",
                 num: 1,
-                url: ""
+                url: "",
+                valid: true
             }
         },
         fee: "0",

@@ -29,7 +29,8 @@ class QuestionTransaction extends BaseTransaction {
      *     answer: String,
      *     reward: String
      *     num: Number,
-     *     url: String
+     *     url: String,
+     *     valid: Boolean
      * }
      */
     validateAsset() {
@@ -78,9 +79,9 @@ class QuestionTransaction extends BaseTransaction {
         else if (!myUtils.checkUtil.checkNumber(this.asset.quiz.reward, "1", utils.convertLSKToBeddows("100"))) {
             errors.push(
                 new TransactionError(
-                    "Invalid 'asset.asset.quiz.reward' defined on transaction",
+                    "Invalid 'asset.quiz.reward' defined on transaction",
                     this.id,
-                    ".asset.asset.quiz.reward",
+                    ".asset.quiz.reward",
                     this.asset.quiz.reward,
                     `Must be in the range of ${utils.convertBeddowsToLSK("1")} to 100 LSK`,
                 )
@@ -93,9 +94,9 @@ class QuestionTransaction extends BaseTransaction {
         else if (!myUtils.checkUtil.checkNumber(this.asset.quiz.num, "1", "100")) {
             errors.push(
                 new TransactionError(
-                    "Invalid 'asset.asset.quiz.num' defined on transaction",
+                    "Invalid 'asset.quiz.num' defined on transaction",
                     this.id,
-                    ".asset.asset.quiz.num",
+                    ".asset.quiz.num",
                     this.asset.quiz.num,
                     "Must be in the range of 1 to 100 LSQ (Array)",
                 )
@@ -108,9 +109,9 @@ class QuestionTransaction extends BaseTransaction {
         else if (this.asset.quiz.url && !myUtils.checkUtil.checkUrl(this.asset.quiz.url)) {
             errors.push(
                 new TransactionError(
-                    "Invalid 'asset.asset.quiz.url' defined on transaction",
+                    "Invalid 'asset.quiz.url' defined on transaction",
                     this.id,
-                    ".asset.asset.quiz.url",
+                    ".asset.quiz.url",
                     this.asset.quiz.url,
                     "Must be a valid URL",
                 )
