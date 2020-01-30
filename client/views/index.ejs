@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta content="width=device-width,initial-scale=1.0" name="viewport">
+    <meta charset="utf-8">
+    <title>LQuiz:Login Page</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Aldrich">
+    <script>
+        const adjust = () => {
+            document.querySelector('.container').style = "visibility: hidden;";
+            const container = document.querySelector('.container');
+            const ch = container.offsetHeight;
+            const wh = window.innerHeight;
+            if (wh > ch) container.style = `margin-top: ${(wh-ch) / 2}px`
+            else container.style = `margin-top: 5px`
+        }
+        onload = adjust;
+        
+        window.addEventListener('resize', () => {
+            document.querySelector('.container').style = "visibility: hidden;";
+            setTimeout(function(){
+                adjust();
+            }, 100);
+        });
+    </script>
+</head>
+<body>
+    <div class="container">
+        <div class="row">
+            <div class="col-1 col-sm-2 col-md-3"></div>
+            <h2 class="title">LQuiz</h2>
+        </div>
+        <form action="/login" method="post">
+            <div class="row">
+                <div class="col-1 col-sm-2 col-md-3"></div>
+                <div id="frm-login" class="col-10 col-sm-8 col-md-6">
+                    <% if (msg != "") { %>
+                    <div class="alert alert-<%= type %>"><%= msg %></div>
+                    <% } %>
+                    <input type="password" name="passphrase" class="input" placeholder="passphrase" required>
+                    <button type="submit" id="btn-login" class="btn btn-primary">Login</button>
+                </div>
+                <div class="col-1 col-sm-2 col-md-3"></div>
+            </div>
+        </form>
+    </div>
+</body>
+</html>
