@@ -1,4 +1,5 @@
 const express = require("express");
+const session = require("express-session");
 const bodyParser = require("body-parser");
 const helmet = require("helmet");
 const { request, checkUtil } = require("../utility");
@@ -14,13 +15,23 @@ app.use(bodyParser.json());
 app.use(helmet());
 
 const router = express.Router();
-app.use("/api", router);
+app.use(
+    "/api",
+    (req, res, next) => {
+        res.header('Access-Control-Allow-Origin', '*');
+        res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
+        res.header('Access-Control-Allow-Methods', 'GET,POST,HEAD,OPTIONS');
+        next();
+    },
+    router
+);
 
 /**
  * Question Transaction
  */
 router.post("/question", (req, res) => {
     (async () => {
+        console.log(req.body)
         // Validation
         const errors = await question.validator(req);
         if (errors.length > 0) {

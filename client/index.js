@@ -60,7 +60,7 @@ router.get("/top", (req, res) => {
             res.redirect('/');
             return;
         }
-        res.render("top");
+        res.render("top", {address: req.session.address});
     })().catch((err) => {
         // SYSTEM ERROR
         console.log(err);
@@ -79,21 +79,15 @@ router.post("/login", (req, res) => {
         req.session.message = null;
         if (!req.body.passphrase) {
             req.session.message = {type: "danger", msg: "Passphrase is required"};
-            res.redirect("/");
-            return;
-        }
-        if (req.body.passphrase.split(" ").length != 12) {
+
+        } else if (req.body.passphrase.split(" ").length != 12) {
             req.session.message = {type: "danger", msg: "Incorrect passphrase"};
-            res.redirect("/");
-            return;
-        }
-        try {
-            req.session.address = cryptography.getAddressFromPassphrase(req.body.passphrase);
-            res.redirect("/");
-        } catch (err) {
-            req.session.message = {type: "danger", msg: "Incorrect passphrase"};
-            res.redirect("/");
-            return;
+        } else {
+            try {
+                req.session.address = cryptography.getAddressFromPassphrase(req.body.passphrase);
+            } catch (err) {
+                req.session.message = {type: "danger", msg: "Incorrect passphrase"};
+            }
         }
         res.redirect("/");
     })().catch((err) => {

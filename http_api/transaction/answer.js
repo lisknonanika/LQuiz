@@ -36,7 +36,7 @@ module.exports.validator = async(req) => {
     let address = "";
     try {
         address = cryptography.getAddressFromPassphrase(req.body.passphrase);
-        if (address !== req.session.address) {
+        if (address !== req.body.address) {
             errors.push("Incorrect passphrase");
             return errors;
         }
@@ -168,7 +168,7 @@ module.exports.createTransaction = (req) => {
     param.asset.quiz.reward = req.body.reward;
 
     // Set recipientId
-    param.recipientId = req.session.address;
+    param.recipientId = req.body.address;
 
     // Set timestamp
     param.timestamp = myUtils.getTimestamp();

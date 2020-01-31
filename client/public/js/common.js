@@ -1,13 +1,14 @@
-const doPost = (url, json) => {
+const doPost = (url, param) => {
     const fetchParam = {
+        mode: 'cors',
         method: "POST",
         headers: {
             "Accept": "application/json",
-            "Content-Type": "application/json;"
+            "Content-Type": "application/json;charset=UTF-8"
         },
-        body: JSON.stringify(json)
+        body: JSON.stringify(param)
     };
-    fetch(url,fetchParam)
+    fetch(url, fetchParam)
     .then((res) => {res.json()})
     .then((json) => {return json})
     .catch((err) => {
@@ -17,7 +18,10 @@ const doPost = (url, json) => {
 }
 
 const doGet = (url, param) => {
-    fetch(`${url}?${param}`)
+    const fetchParam = {
+        mode: 'cors'
+    };
+    fetch(`${url}?${param}`, fetchParam)
     .then((res) => {res.json()})
     .then((json) => {return json})
     .catch((err) => {
