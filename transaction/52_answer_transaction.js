@@ -129,7 +129,7 @@ class AnswerTransaction extends BaseTransaction {
             return errors;
         }
 
-        const sender = store.account.get(this.senderId);
+        const sender = store.account.getOrDefault(this.senderId);
         
         const afterBalance = myUtils.add(sender.balance, this.asset.quiz.reward);
         if (afterBalance > constants.MAX_TRANSACTION_AMOUNT) {
@@ -144,9 +144,12 @@ class AnswerTransaction extends BaseTransaction {
 
     undoAsset(store) {
         const sender = store.account.get(this.senderId);
-        const afterBalance = myUtils.sub(sender.balance, this.asset.quiz.reward);
-        const oldObj = { ...sender, balance: afterBalance.toString(), asset: null };
-        store.account.set(sender.address, oldObj);
+        if (sender) {
+            const afterBalance = myUtils.sub(sender.balance, this.asset.quiz.reward);
+            if (+afterBalance < 0) afterBalance = "0";
+            const oldObj = { ...sender, balance: afterBalance.toString(), asset: null };
+            store.account.set(sender.address, oldObj);
+        }
         return [];
     }
 }

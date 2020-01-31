@@ -138,6 +138,17 @@ class QuestionTransaction extends BaseTransaction {
 
     applyAsset(store) {
         const sender = store.account.get(this.senderId);
+        if (!sender) {
+            errors.push(new TransactionError("Not initialized address", this.id));
+            return errors;
+        }
+
+        const afterBalance = myUtils.sub(sender.balance, this.fee);
+        if (+afterBalance < 0) {
+            errors.push(new TransactionError("Not enough balance", this.id));
+            return errors;
+        }
+        
         const newObj = { ...sender, asset: { quiz: this.asset.quiz } };
         store.account.set(sender.address, newObj);
         return [];

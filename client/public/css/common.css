@@ -1,0 +1,20 @@
+@charset "utf-8";
+* {
+    font-family: 'Noto Sans JP', sans-serif, monospace;
+}
+.title {
+    margin-left: -1rem;
+    font-family: 'Galindo', cursive;
+}
+.input[type="text"],
+.input[type="password"]  {
+    border: 1px solid #666;
+    border-radius: 5px;
+    width: 100%;
+    padding: 5px 10px;
+}
+.alert {
+    padding-top: 5px;
+    padding-bottom: 5px;
+    margin-bottom: 5px;
+}

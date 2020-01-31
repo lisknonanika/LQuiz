@@ -36,7 +36,7 @@ module.exports.validator = async(req) => {
     let address = "";
     try {
         address = cryptography.getAddressFromPassphrase(req.body.passphrase);
-        if (address !== req.body.address) {
+        if (address !== req.session.address) {
             errors.push("Incorrect passphrase");
             return errors;
         }
@@ -154,7 +154,7 @@ module.exports.createTransaction = (req) => {
             }
         },
         fee: "0",
-        recipientId: "0L",
+        recipientId: "",
         timestamp: 0
     }
 
@@ -166,6 +166,9 @@ module.exports.createTransaction = (req) => {
 
     // Set reward
     param.asset.quiz.reward = req.body.reward;
+
+    // Set recipientId
+    param.recipientId = req.session.address;
 
     // Set timestamp
     param.timestamp = myUtils.getTimestamp();

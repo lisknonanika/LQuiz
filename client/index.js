@@ -30,15 +30,15 @@ app.use("/", router);
  */
 router.get("/", (req, res) => {
     (async () => {
+        let messageType = "";
         let message = "";
         if (req.session.message) {
-            message = req.session.message;
+            messageType = req.session.message.type;
+            message = req.session.message.msg;
             req.session.message = null;
         }
-        if (req.session.address) res.render("/top");
-        else if (req.query.error) res.render("index", {msg: message, type: "error"});
-        else if (req.query.timeout) res.render("index", {msg: "Session Timeout.", type: "error"});
-        else res.render("index", {msg: "", type: "info"});
+        if (req.session.address) res.redirect("/top");
+        else res.render("index", {msg: message, type: messageType});
     })().catch((err) => {
         // SYSTEM ERROR
         console.log(err);
@@ -56,7 +56,8 @@ router.get("/top", (req, res) => {
     (async () => {
         req.session.message = null;
         if (!req.session.address) {
-            res.redirect('/?timeout=true');
+            req.session.message = {type: "warning", msg: "Please Re-Login"};
+            res.redirect('/');
             return;
         }
         res.render("top");
@@ -77,21 +78,21 @@ router.post("/login", (req, res) => {
     (async () => {
         req.session.message = null;
         if (!req.body.passphrase) {
-            req.session.message = "Passphrase is required";
-            res.redirect("/?error=true");
+            req.session.message = {type: "danger", msg: "Passphrase is required"};
+            res.redirect("/");
             return;
         }
         if (req.body.passphrase.split(" ").length != 12) {
-            req.session.message = "Incorrect passphrase";
-            res.redirect("/?error=true");
+            req.session.message = {type: "danger", msg: "Incorrect passphrase"};
+            res.redirect("/");
             return;
         }
         try {
             req.session.address = cryptography.getAddressFromPassphrase(req.body.passphrase);
             res.redirect("/");
         } catch (err) {
-            req.session.message = "Incorrect passphrase";
-            res.redirect("/?error=true");
+            req.session.message = {type: "danger", msg: "Incorrect passphrase"};
+            res.redirect("/");
             return;
         }
         res.redirect("/");
@@ -129,7 +130,7 @@ router.post("/guest", (req, res) => {
 router.get("/logout", (req, res) => {
     (async () => {
         req.session.address = null;
-        req.session.message = null;
+        req.session.message = {type: "success", msg: "Logout"};
         res.redirect("/");
     })().catch((err) => {
         // SYSTEM ERROR
