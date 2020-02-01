@@ -101,34 +101,34 @@ router.post("/login", (req, res) => {
 });
 
 /**
- * POST: guest
+ * POST: logout
  */
-router.post("/guest", (req, res) => {
+router.post("/logout", (req, res) => {
     (async () => {
-        req.session.message = null;
-        req.session.address = "0L";
+        req.session.address = null;
+        req.session.message = {type: "success", msg: "Logout Success"};
         res.redirect("/");
     })().catch((err) => {
         // SYSTEM ERROR
         console.log(err);
-        req.session.address = null;
-        req.session.message = null;
         res.status(500);
         res.render("500");
     });
 });
 
 /**
- * GET: logout
+ * POST: guest
  */
-router.get("/logout", (req, res) => {
+router.post("/guest", (req, res) => {
     (async () => {
-        req.session.address = null;
-        req.session.message = {type: "success", msg: "Logout"};
+        req.session.message = null;
+        req.session.address = "Guest";
         res.redirect("/");
     })().catch((err) => {
         // SYSTEM ERROR
         console.log(err);
+        req.session.address = null;
+        req.session.message = null;
         res.status(500);
         res.render("500");
     });

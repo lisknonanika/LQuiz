@@ -6,15 +6,22 @@
     margin-left: -1rem;
     font-family: 'Galindo', cursive;
 }
-.input[type="text"],
-.input[type="password"]  {
+input[type="text"],
+input[type="password"]  {
     border: 1px solid #666;
     border-radius: 5px;
     width: 100%;
     padding: 5px 10px;
+    font-size: 16px;
 }
 .alert {
     padding-top: 5px;
     padding-bottom: 5px;
     margin-bottom: 5px;
+    background-color: transparent;
+    border-color: transparent;
+}
+
+.alert::before {
+    content: "message: ";
 }
