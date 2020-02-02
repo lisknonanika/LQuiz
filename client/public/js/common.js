@@ -30,6 +30,38 @@ const doGet = (url, param) => {
     });
 }
 
+const passphraseHtml = `
+    <input type="password" id="p1" class="passphrase" placeholder="1" oninput="setPassphrase(1)">
+    <input type="password" id="p2" class="passphrase" placeholder="2" oninput="setPassphrase(2)">
+    <input type="password" id="p3" class="passphrase" placeholder="3" oninput="setPassphrase(3)">
+    <input type="password" id="p4" class="passphrase" placeholder="4" oninput="setPassphrase(4)">
+    <input type="password" id="p5" class="passphrase" placeholder="5" oninput="setPassphrase(5)">
+    <input type="password" id="p6" class="passphrase" placeholder="6" oninput="setPassphrase(6)">
+    <input type="password" id="p7" class="passphrase" placeholder="7" oninput="setPassphrase(7)">
+    <input type="password" id="p8" class="passphrase" placeholder="8" oninput="setPassphrase(8)">
+    <input type="password" id="p9" class="passphrase" placeholder="9" oninput="setPassphrase(9)">
+    <input type="password" id="p10" class="passphrase" placeholder="10" oninput="setPassphrase(10)">
+    <input type="password" id="p11" class="passphrase" placeholder="11" oninput="setPassphrase(11)">
+    <input type="password" id="p12" class="passphrase" placeholder="12" oninput="setPassphrase(12)">
+`;
+
+const getPassphraseValue = () => {
+    let passphrase =
+    document.querySelector("#p1").value.trim() + " " +
+    document.querySelector("#p2").value.trim() + " " +
+    document.querySelector("#p3").value.trim() + " " +
+    document.querySelector("#p4").value.trim() + " " +
+    document.querySelector("#p5").value.trim() + " " +
+    document.querySelector("#p6").value.trim() + " " +
+    document.querySelector("#p7").value.trim() + " " +
+    document.querySelector("#p8").value.trim() + " " +
+    document.querySelector("#p9").value.trim() + " " +
+    document.querySelector("#p10").value.trim() + " " +
+    document.querySelector("#p11").value.trim() + " " +
+    document.querySelector("#p12").value.trim();
+    return passphrase.trim();
+}
+
 const setPassphrase = (n) => {
     const elem = document.querySelector(`#p${n}`);
     const vals = elem.value.toLowerCase().split(" ");
@@ -47,40 +79,13 @@ const setPassphrase = (n) => {
 const login = (redirectUrl) => {
     Swal.fire({
         title: 'Input your passphrase',
-        html: `
-            <input type="password" id="p1" class="passphrase" placeholder="1" oninput="setPassphrase(1)">
-            <input type="password" id="p2" class="passphrase" placeholder="2" oninput="setPassphrase(2)">
-            <input type="password" id="p3" class="passphrase" placeholder="3" oninput="setPassphrase(3)">
-            <input type="password" id="p4" class="passphrase" placeholder="4" oninput="setPassphrase(4)">
-            <input type="password" id="p5" class="passphrase" placeholder="5" oninput="setPassphrase(5)">
-            <input type="password" id="p6" class="passphrase" placeholder="6" oninput="setPassphrase(6)">
-            <input type="password" id="p7" class="passphrase" placeholder="7" oninput="setPassphrase(7)">
-            <input type="password" id="p8" class="passphrase" placeholder="8" oninput="setPassphrase(8)">
-            <input type="password" id="p9" class="passphrase" placeholder="9" oninput="setPassphrase(9)">
-            <input type="password" id="p10" class="passphrase" placeholder="10" oninput="setPassphrase(10)">
-            <input type="password" id="p11" class="passphrase" placeholder="11" oninput="setPassphrase(11)">
-            <input type="password" id="p12" class="passphrase" placeholder="12" oninput="setPassphrase(12)">
-        `,
+        html: passphraseHtml,
         showCancelButton: true,
         confirmButtonText: 'Login',
         showLoaderOnConfirm: true,
         allowOutsideClick: false,
         preConfirm: () => {
-            let passphrase =
-                document.querySelector("#p1").value.trim() + " " +
-                document.querySelector("#p2").value.trim() + " " +
-                document.querySelector("#p3").value.trim() + " " +
-                document.querySelector("#p4").value.trim() + " " +
-                document.querySelector("#p5").value.trim() + " " +
-                document.querySelector("#p6").value.trim() + " " +
-                document.querySelector("#p7").value.trim() + " " +
-                document.querySelector("#p8").value.trim() + " " +
-                document.querySelector("#p9").value.trim() + " " +
-                document.querySelector("#p10").value.trim() + " " +
-                document.querySelector("#p11").value.trim() + " " +
-                document.querySelector("#p12").value.trim();
-
-            passphrase = passphrase.trim();
+            const passphrase = getPassphraseValue();    
             if (!passphrase) {
                 Swal.showValidationMessage("Passphrase is required");
             } else if (!lisk.passphrase.Mnemonic.validateMnemonic(passphrase)) {
@@ -93,11 +98,8 @@ const login = (redirectUrl) => {
         if (!result.value) return;
         (async() => {
             const ret = await doPost("/login", {passphrase: result.value})
-            if (ret.success) {
-                location.href = redirectUrl? redirectUrl: location.href;
-            } else {
-                Swal.showValidationMessage("Login Failed");
-            }
+            if (ret.success) location.href = redirectUrl? redirectUrl: location.href;
+            else Swal.showValidationMessage("Login Failed");
         })().catch((err) => {
             Swal.showValidationMessage("Login Failed");
         })
@@ -122,24 +124,19 @@ const createAccount = () => {
         confirmButtonText: 'Login',
         allowOutsideClick: false,
         showLoaderOnConfirm: true,
-        preConfirm: () => {
-            (async() => {
-                const ret = await doPost("http://127.0.0.1:30001/api/faucet", {passphrase: passphrase})
-                if (!ret.success) Swal.showValidationMessage("Login Failed");
-                else return true;
-            })().catch((err) => {
+        preConfirm: async() => {
+            const faucet = await doPost("http://127.0.0.1:30001/api/faucet", {passphrase: passphrase})
+            if (!faucet.success) {
                 Swal.showValidationMessage("Login Failed");
-            })
+            } else {
+                const login = await doPost("/login", {passphrase: passphrase})
+                if (!login.success) Swal.showValidationMessage("Login Failed");
+                else return true;
+            }
         }
     }).then((result) => {
         if (!result.value) return;
-        (async() => {
-            const ret = await doPost("/login", {passphrase: passphrase})
-            if (!ret.success) Swal.showValidationMessage("Login Failed");
-            else location.reload();
-        })().catch((err) => {
-            Swal.showValidationMessage("Login Failed");
-        })
+        else location.reload();
     })
 }
 

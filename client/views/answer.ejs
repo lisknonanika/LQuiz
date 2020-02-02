@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta content="width=device-width,initial-scale=1.0" name="viewport">
+    <meta charset="utf-8">
+    <title>LQuiz:Top Page</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Noto+Sans+JP|Galindo&display=swap">
+    <link rel="stylesheet" href="../css/common.css">
+    <link rel="stylesheet" href="../css/login.css">
+    <script src="../js/common.js"></script>
+    <script>
+        const test = () => {
+            const json = {
+                address: "<%= address %>",
+                question: document.querySelector("#question").value,
+                answer: document.querySelector("#answer").value,
+                reward: document.querySelector("#reward").value,
+                num: document.querySelector("#num").value,
+                url: document.querySelector("#url").value,
+                passphrase: document.querySelector("#passphrase").value,
+            }
+            doPost("http://127.0.0.1:30001/api/question", json)
+        }
+    </script>
+</head>
+<body>
+    <form method="post" id="frm"></form>
+    <button type="button" id="btn-logoff" class="btn btn-link" onclick="logout()">Logout</button>
+    <div class="container">
+        <%= address %>
+        <input type="text" name="question" id="question" class="input" placeholder="question" required>
+        <input type="number" name="reward" id="reward" class="input" placeholder="reward" required>
+        <input type="number" name="num" id="num" class="input" placeholder="num" required>
+        <input type="text" name="url" id="url" class="input" placeholder="url">
+        <input type="text" name="answer" id="answer" class="input" placeholder="answer" required>
+        <input type="password" name="passphrase" id="passphrase" class="input" placeholder="passphrase" required>
+        <button type="button" id="btn-login" class="btn btn-primary" onclick="test()">post</button>
+    </div>
+</body>
+</html>
