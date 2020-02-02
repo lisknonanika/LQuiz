@@ -1,4 +1,5 @@
 const cryptography = require("@liskhq/lisk-cryptography");
+const passphrase = require("@liskhq/lisk-passphrase");
 const express = require("express");
 const session = require("express-session");
 const bodyParser = require("body-parser");
@@ -78,25 +79,25 @@ router.post("/login", (req, res) => {
     (async () => {
         req.session.message = null;
         if (!req.body.passphrase) {
-            req.session.message = {type: "danger", msg: "Passphrase is required"};
+            res.json({success: false, err: "Passphrase is required"});
 
-        } else if (req.body.passphrase.split(" ").length != 12) {
-            req.session.message = {type: "danger", msg: "Incorrect passphrase"};
+        } else if (!passphrase.Mnemonic.validateMnemonic(req.body.passphrase)) {
+            res.json({success: false, err: "Incorrect passphrase"});
+            
         } else {
             try {
                 req.session.address = cryptography.getAddressFromPassphrase(req.body.passphrase);
+                res.json({success: true});
             } catch (err) {
-                req.session.message = {type: "danger", msg: "Incorrect passphrase"};
+                res.json({success: false, err: "Incorrect passphrase"});
             }
         }
-        res.redirect("/");
     })().catch((err) => {
         // SYSTEM ERROR
         console.log(err);
         req.session.address = null;
         req.session.message = null;
-        res.status(500);
-        res.render("500");
+        res.json({success: false, err: "Login Failed"});
     });
 });
 

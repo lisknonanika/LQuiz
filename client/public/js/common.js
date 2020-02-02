@@ -8,8 +8,8 @@ const doPost = (url, param) => {
         }
     };
     if (param) fetchParam.body = JSON.stringify(param);
-    fetch(url, fetchParam)
-    .then((res) => {res.json()})
+    return fetch(url, fetchParam)
+    .then((res) => {return res.json()})
     .then((json) => {return json})
     .catch((err) => {
         console.log(err);
@@ -21,8 +21,8 @@ const doGet = (url, param) => {
     const fetchParam = {
         mode: 'cors'
     };
-    fetch(`${url}?${param}`, fetchParam)
-    .then((res) => {res.json()})
+    return fetch(`${url}?${param}`, fetchParam)
+    .then((res) => {return res.json()})
     .then((json) => {return json})
     .catch((err) => {
         console.log(err);
@@ -40,7 +40,7 @@ const setPassphrase = (n) => {
     }
 }
 
-const login = () => {
+const login = (redirectUrl) => {
     Swal.fire({
         title: 'Input your passphrase',
         html: `
@@ -79,25 +79,67 @@ const login = () => {
             passphrase = passphrase.trim();
             if (!passphrase) {
                 Swal.showValidationMessage("Passphrase is required");
-            } else if (passphrase.split(" ").length != 12) {
+            } else if (!lisk.passphrase.Mnemonic.validateMnemonic(passphrase)) {
                 Swal.showValidationMessage("Incorrect passphrase");
             } else {
                 return passphrase;
             }
         }
     }).then((result) => {
-        if (result.value) {
-            document.querySelector(".container").style = "visibility: hidden;";
-            document.querySelector("#frm").action = "http://127.0.0.1:30002/login";
-            document.querySelector("#frm").innerHTML = `<input type="password" name="passphrase" value="${result.value}">`;
-            document.forms[0].submit();
-            return true;
+        if (!result.value) return;
+        (async() => {
+            const ret = await doPost("/login", {passphrase: result.value})
+            if (ret.success) {
+                location.href = redirectUrl? redirectUrl: location.href;
+            } else {
+                Swal.showValidationMessage("Login Failed");
+            }
+        })().catch((err) => {
+            Swal.showValidationMessage("Login Failed");
+        })
+    })
+}
+
+const createAccount = () => {
+    const passphrase = lisk.passphrase.Mnemonic.generateMnemonic();
+    const address = lisk.cryptography.getAddressFromPassphrase(passphrase);
+    Swal.fire({
+        title: '',
+        html: `
+            <h4>Address</h4>
+            <div style="background-color: #eee;padding:10px;border-radius:5px;">${address}</div>
+            <br>
+            <h4>Passphrase</h4>
+            <div style="background-color: #eee;padding:10px;border-radius:5px;">${passphrase}</div>
+            <div style="color: #f00;font-size:0.8rem;">passphrase cannot be restored. Never forget.</div>
+            <div style="color: #f00;font-size:0.8rem;">You will receive 100 LSK for testing.</div>
+        `,
+        showCancelButton: true,
+        confirmButtonText: 'Login',
+        allowOutsideClick: false,
+        showLoaderOnConfirm: true,
+        preConfirm: () => {
+            (async() => {
+                const ret = await doPost("http://127.0.0.1:30001/api/faucet", {passphrase: passphrase})
+                if (!ret.success) Swal.showValidationMessage("Login Failed");
+                else return true;
+            })().catch((err) => {
+                Swal.showValidationMessage("Login Failed");
+            })
         }
+    }).then((result) => {
+        if (!result.value) return;
+        (async() => {
+            const ret = await doPost("/login", {passphrase: passphrase})
+            if (!ret.success) Swal.showValidationMessage("Login Failed");
+            else location.reload();
+        })().catch((err) => {
+            Swal.showValidationMessage("Login Failed");
+        })
     })
 }
 
 const logout = () => {
     document.querySelector("#frm").action = "http://127.0.0.1:30002/logout";
     document.forms[0].submit();
-    return true;
 }

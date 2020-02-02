@@ -149,7 +149,7 @@ module.exports.createTransaction = (req) => {
     if (req.body.url) param.asset.quiz.url = req.body.url;
 
     // Set fee
-    param.fee = myUtils.mul(param.asset.quiz.reward, param.asset.quiz.num);
+    param.fee = myUtils.add(myUtils.mul(param.asset.quiz.reward, param.asset.quiz.num), QuestionTransaction.FEE);
 
     // Set recipientId
     param.recipientId = req.body.address;

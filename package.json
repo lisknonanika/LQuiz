@@ -9,6 +9,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@liskhq/lisk-passphrase": "^3.0.0",
     "body-parser": "^1.19.0",
     "crypto": "^1.0.1",
     "ejs": "^3.0.1",
