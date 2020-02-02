@@ -31,13 +31,17 @@ const doGet = (url, param) => {
 }
 
 const setPassphrase = (n) => {
-    const vals = document.querySelector(`#p${n}`).value.split(" ");
-    document.querySelector(`#p${n}`).value = vals[0].trim();
-    for (i = 1; i < vals.length; i++) {
-        if (n + i > 12) return;
-        document.querySelector(`#p${n+i}`).value = vals[i].trim();
-        document.querySelector(`#p${n+i}`).focus();
-    }
+    const elem = document.querySelector(`#p${n}`);
+    const vals = elem.value.toLowerCase().split(" ");
+    const val = vals.shift().trim();
+    elem.value = val;
+    if (val.length == 0) elem.style="";
+    else if (lisk.passphrase.Mnemonic.wordlists.EN.indexOf(val) >= 0) elem.style="color: #254898";
+    else elem.style="color: #FF4557";
+    if (vals.length === 0 || n >= 12 || n < 1) return;
+    document.querySelector(`#p${n+1}`).focus();
+    document.querySelector(`#p${n+1}`).value = vals.join(" ");
+    setPassphrase(n+1);
 }
 
 const login = (redirectUrl) => {
@@ -111,8 +115,8 @@ const createAccount = () => {
             <br>
             <h4>Passphrase</h4>
             <div style="background-color: #eee;padding:10px;border-radius:5px;">${passphrase}</div>
-            <div style="color: #f00;font-size:0.8rem;">passphrase cannot be restored. Never forget.</div>
-            <div style="color: #f00;font-size:0.8rem;">You will receive 100 LSK for testing.</div>
+            <div style="color: #FF4557;font-size:0.8rem;">passphrase cannot be restored. Never forget.</div>
+            <div style="color: #FF4557;font-size:0.8rem;">You will receive 100 LSK for testing.</div>
         `,
         showCancelButton: true,
         confirmButtonText: 'Login',
