@@ -28,7 +28,7 @@
 		"logger": {
 			"fileLogLevel": "debug",
 			"logFileName": "logs/devnet/lisk.log",
-			"consoleLogLevel": "info"
+			"consoleLogLevel": "error"
 		},
 		"storage": {
 			"logFileName": "logs/devnet/lisk_db.log",

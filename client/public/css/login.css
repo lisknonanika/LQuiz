@@ -1,12 +1,6 @@
 @charset "utf-8";
-#frm-login {
-    padding: 10px;
-}
-.btn {
+.btn,
+.link {
     width: 100%;
     margin-bottom: 10px;
-}
-.passphrase {
-    width: 60px !important;
-    margin: 5px;
 }

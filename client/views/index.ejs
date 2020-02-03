@@ -4,38 +4,28 @@
     <meta content="width=device-width,initial-scale=1.0" name="viewport">
     <meta charset="utf-8">
     <title>LQuiz:Login Page</title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Noto+Sans+JP|Galindo&display=swap">
-    <link rel="stylesheet" href="../css/common.css">
+    <%- include('parts/head') %>
     <link rel="stylesheet" href="../css/login.css">
-    <script src="https://js.lisk.io/lisk-client-2.1.1.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
-    <script src="../js/common.js"></script>
     <script src="../js/login.js"></script>
 </head>
 <body>
     <form method="post" id="frm"></form>
     <div class="container">
         <div class="row">
-            <div class="col-1 col-sm-2 col-md-3"></div>
             <h1 class="title">LQuiz</h1>
         </div>
         <div class="row">
-            <div class="col-1 col-sm-2 col-md-3"></div>
-            <div class="col-10 col-sm-8 col-md-6">
-                <% if (msg != "") { %>
-                <div class="alert alert-<%= type %>"><%= msg %></div>
-                <% } %>
-                <button type="button" id="btn-login" class="btn btn-primary" onclick="login()">Login</button>
-                <button type="button" id="btn-guest-login" class="btn btn-info" onclick="guestLogin()">Guest Login</button>
-                <button type="button" id="btn-register" class="btn btn-link" onclick="createAccount()">Create a LQuiz Account</button>
+            <% if (msg != "") { %>
+            <div class="col s12 message <%= type %>"><%= msg %></div>
+            <% } %>
+            <div class="col s12">
+                <a href="javascript:void 0;" class="btn light-blue darken-4" onclick="login()">Login</a>
+                <a href="javascript:void 0;" class="btn" onclick="guestLogin()">Guest Login</a>
+                <a href="javascript:void 0;" class="link" onclick="createAccount()">Create a LQuiz Account</a>
             </div>
-            <div class="col-1 col-sm-2 col-md-3"></div>
         </div>
         <div class="row">
-            <div class="col-1 col-sm-2 col-md-3"></div>
-            <div class="col-10 col-sm-8 col-md-6">LQuiz is a PoC built with Lisk SDK.</div>
-            <div class="col-1 col-sm-2 col-md-3"></div>
+            <div class="col s12 red-text text-darken-3">LQuiz is a PoC built with Lisk SDK.</div>
         </div>
     </div>
 </body>

@@ -1,27 +1,82 @@
 @charset "utf-8";
-* {
+html {
     font-family: 'Noto Sans JP', sans-serif, monospace;
+    font-size: 62.5%;
 }
+
+body {
+    font-size: 1.6em;
+}
+
 .title {
-    margin-left: -1rem;
     font-family: 'Galindo', cursive;
 }
-input[type="text"],
-input[type="password"]  {
-    border: 1px solid #666;
-    border-radius: 5px;
-    width: 100%;
-    padding: 5px 10px;
-    font-size: 16px;
+
+.link {
+    font-size: 1.4rem;
+    color: #01579b;
+    text-decoration: underline;
+    text-align: center;
+    vertical-align: middle;
+    display: inline-block;
+    padding: 0 16px;
+    text-transform: uppercase;
+    letter-spacing: .5px;
+    cursor: pointer;
 }
-.alert {
+
+.message {
     padding-top: 5px;
     padding-bottom: 5px;
     margin-bottom: 5px;
-    background-color: transparent;
-    border-color: transparent;
+    font-weight: bold;
 }
 
-.alert::before {
+.message::before {
     content: "message: ";
+}
+
+.error {
+    color: #c62828;
+}
+
+.warning {
+    color: #c0ca33;
+}
+
+.success {
+    color: #43a047;
+}
+
+.passphrase {
+    width: 60px !important;
+    margin: 5px !important;
+}
+
+/*
+ override: SweetAlert2 
+*/
+.swal2-popup {
+    font-size: 1.6rem;
+}
+
+/*
+ override: matelialize
+*/
+.btn {
+    font-size: 1.6rem;
+}
+
+.btn:hover,
+.btn:active,
+.link:hover,
+.link:active {
+    opacity: 0.8;
+}
+
+.btn:focus,
+.btn:visited,
+.link:focus,
+.link:visited  {
+    opacity: 1;
 }
