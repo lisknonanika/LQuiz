@@ -117,8 +117,8 @@ const createAccount = () => {
             <br>
             <h4>Passphrase</h4>
             <div style="background-color: #eee;padding:10px;border-radius:5px;">${passphrase}</div>
-            <div style="color: #FF4557;font-size:0.8em;">passphrase cannot be restored. Never forget.</div>
-            <div style="color: #FF4557;font-size:0.8em;">You will receive 100 LSK for testing.</div>
+            <div style="color: #FF4557;font-size:0.8rem;">passphrase cannot be restored. Never forget.</div>
+            <div style="color: #FF4557;font-size:0.8rem;">You will receive 100 LSK for testing.</div>
         `,
         showCancelButton: true,
         confirmButtonText: 'Login',

@@ -1,51 +1,46 @@
 @charset "utf-8";
-html {
+* {
     font-family: 'Noto Sans JP', sans-serif, monospace;
-    font-size: 62.5%;
+    font-size: 100%;
 }
 
-body {
-    font-size: 1.6em;
+i {
+    margin-right: 5px;
+}
+
+input[type="text"],
+input[type="password"],
+input[type="number"]  {
+    border: 0;
+    border-bottom: 2px solid #eee;
+    width: 100%;
+    padding: 5px 10px;
+}
+
+input[type="text"]:focus,
+input[type="password"]:focus,
+input[type="number"]:focus  {
+    outline: none;
+    border: 0;
+    border-bottom: 2px solid #08aeb9;
+    width: 100%;
+    padding: 5px 10px;
 }
 
 .title {
     font-family: 'Galindo', cursive;
 }
 
-.link {
-    font-size: 1.4rem;
-    color: #01579b;
-    text-decoration: underline;
-    text-align: center;
-    vertical-align: middle;
-    display: inline-block;
-    padding: 0 16px;
-    text-transform: uppercase;
-    letter-spacing: .5px;
-    cursor: pointer;
-}
-
-.message {
+.alert {
     padding-top: 5px;
     padding-bottom: 5px;
     margin-bottom: 5px;
-    font-weight: bold;
+    background-color: transparent;
+    border-color: transparent;
 }
 
-.message::before {
+.alert::before {
     content: "message: ";
-}
-
-.error {
-    color: #c62828;
-}
-
-.warning {
-    color: #c0ca33;
-}
-
-.success {
-    color: #43a047;
 }
 
 .passphrase {
@@ -54,29 +49,32 @@ body {
 }
 
 /*
- override: SweetAlert2 
+ override: bootstrap4
 */
-.swal2-popup {
-    font-size: 1.6rem;
+.navbar {
+    background-color:#DFE6F2;
+    padding: 0px 15px;
 }
 
-/*
- override: matelialize
-*/
-.btn {
-    font-size: 1.6rem;
+.navbar-brand {
+    font-size: 1.5rem;
+    margin-left: 10px;
 }
 
-.btn:hover,
-.btn:active,
-.link:hover,
-.link:active {
-    opacity: 0.8;
+.nav-item {
+    padding: 0px 5px;
 }
 
-.btn:focus,
-.btn:visited,
-.link:focus,
-.link:visited  {
-    opacity: 1;
+.nav-item.active {
+    border: 0;
+    border-bottom: 2px solid #708dcf;
+    font-weight: bold;
+}
+
+.nav-link {
+    color: #576a9c !important;
+}
+
+.dropdown-menu {
+    background-color: #F7F9FB;
 }
