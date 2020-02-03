@@ -12,20 +12,28 @@
     <form method="post" id="frm"></form>
     <div class="container">
         <div class="row">
-            <h1 class="title">LQuiz</h1>
+            <div class="col s1"></div>
+            <div class="col s10"><h1 class="title">LQuiz</h1></div>
+            <div class="col s1"></div>
         </div>
         <div class="row">
             <% if (msg != "") { %>
-            <div class="col s12 message <%= type %>"><%= msg %></div>
+            <div class="col s1"></div>
+            <div class="col s10 message <%= type %>"><%= msg %></div>
+            <div class="col s1"></div>
             <% } %>
-            <div class="col s12">
+            <div class="col s1"></div>
+            <div class="col s10">
                 <a href="javascript:void 0;" class="btn light-blue darken-4" onclick="login()">Login</a>
                 <a href="javascript:void 0;" class="btn" onclick="guestLogin()">Guest Login</a>
                 <a href="javascript:void 0;" class="link" onclick="createAccount()">Create a LQuiz Account</a>
             </div>
+            <div class="col s1"></div>
         </div>
         <div class="row">
-            <div class="col s12 red-text text-darken-3">LQuiz is a PoC built with Lisk SDK.</div>
+            <div class="col s1"></div>
+            <div class="col s10 red-text text-darken-3">* LQuiz is a PoC built with Lisk SDK.</div>
+            <div class="col s1"></div>
         </div>
     </div>
 </body>
