@@ -149,41 +149,30 @@ const getQuestion = async (isOpen, offset) => {
     const url = isOpen? "oepn-question": "close-question"
     const userId = document.querySelector("#address").value.toUpperCase();
     const param = `userId=${userId}&offset=${offset}`;
-    const ret = await doGet(`http://127.0.0.1:30001/api/${url}`, param);
-    document.querySelector("#question-list").innerHTML = JSON.stringify(ret.response);
+    return await doGet(`http://127.0.0.1:30001/api/${url}`, param);
 }
 
-const getQuestionByCondition = async (offset, id, senderId) => {
-    let params = [];
-    if (offset) params.push(`offset=${offset}`);
-    if (id) params.push(`id=${id}`);
-    if (senderId) params.push(`senderId=${senderId}`);
-
+const getQuestionByCondition = async (params) => {
     let param = "";
-    if (params.length > 0) param = params.join("&");
-    const ret = await doGet("http://127.0.0.1:30001/api/question", param);
-    document.querySelector("#question-list").innerHTML = JSON.stringify(ret.response);
+    if (params) {
+        let arr = [];
+        if (params.offset) arr.push(`offset=${params.offset}`);
+        if (params.id) arr.push(`id=${params.id}`);
+        if (params.senderId) arr.push(`senderId=${params.senderId}`);
+        if (arr.length > 0) param = arr.join("&");
+    }
+    return await doGet("http://127.0.0.1:30001/api/question", param);
 }
 
-const getMyQuestion = async (offset) => {
-    const senderId = document.querySelector("#address").value.toUpperCase();
-    await getQuestionByCondition(offset, "", senderId);
-}
-
-const getAnswerByCondition = async (offset, id, senderId, qid) => {
-    let params = [];
-    if (offset) params.push(`offset=${offset}`);
-    if (id) params.push(`id=${id}`);
-    if (senderId) params.push(`senderId=${senderId}`);
-    if (qid) params.push(`qid=${qid}`);
-
+const getAnswerByCondition = async (params) => {
     let param = "";
-    if (params.length > 0) param = params.join("&");
-    const ret = await doGet("http://127.0.0.1:30001/api/answer", param);
-    document.querySelector("#answer-list").innerHTML = JSON.stringify(ret.response);
-}
-
-const getMyAnswer = async (offset) => {
-    const senderId = document.querySelector("#address").value.toUpperCase();
-    await getAnswerByCondition(offset, "", senderId, "");
+    if (params) {
+        let arr = [];
+        if (params.offset) arr.push(`offset=${params.offset}`);
+        if (params.id) arr.push(`id=${params.id}`);
+        if (params.senderId) arr.push(`senderId=${params.senderId}`);
+        if (params.qid) params.push(`qid=${params.qid}`);
+        if (arr.length > 0) param = arr.join("&");
+    }
+    return await doGet("http://127.0.0.1:30001/api/answer", param);
 }

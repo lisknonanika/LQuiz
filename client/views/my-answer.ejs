@@ -5,6 +5,13 @@
     <meta charset="utf-8">
     <title>LQuiz:My Answer Page</title>
     <%- include('parts/head') %>
+    <script>
+        const getMyAnswer = async (offset) => {
+            const senderId = document.querySelector("#address").value.toUpperCase();
+            const ret = await getAnswerByCondition({offset: offset, senderId: senderId});
+            document.querySelector("#answer-list").innerHTML = JSON.stringify(ret.response);
+        }
+    </script>
 </head>
 <body onload="getMyAnswer(0)">
     <form method="post" id="frm"></form>

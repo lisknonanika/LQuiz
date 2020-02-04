@@ -5,8 +5,14 @@
     <meta charset="utf-8">
     <title>LQuiz:Open Question Page</title>
     <%- include('parts/head') %>
+    <script>
+        const getOpenQuestion = async (offset) => {
+            const ret = await getQuestion(true, offset);
+            document.querySelector("#question-list").innerHTML = JSON.stringify(ret.response);
+        }
+    </script>
 </head>
-<body onload="getQuestion(true, 0)">
+<body onload="getOpenQuestion(0)">
     <form method="post" id="frm"></form>
     <%- include('parts/menu', {current_menu: 1}) %>
     <div class="container">
