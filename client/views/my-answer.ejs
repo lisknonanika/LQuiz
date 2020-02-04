@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta content="width=device-width,initial-scale=1.0" name="viewport">
+    <meta charset="utf-8">
+    <title>LQuiz:My Answer Page</title>
+    <%- include('parts/head') %>
+</head>
+<body onload="getMyAnswer(0)">
+    <form method="post" id="frm"></form>
+    <%- include('parts/menu', {current_menu: 5}) %>
+    <div class="container">
+        <div class="row">
+            <div class="col-12" id="answer-list"></div>
+        </div>
+    </div>
+</body>
+</html>

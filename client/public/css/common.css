@@ -108,5 +108,9 @@ input[type="number"]:focus  {
 }
 
 .dropdown-item:hover {
-    background-color: rgba(115, 165, 255, 0.3);
+    background-color: rgba(115, 165, 255, 0.15);
+}
+
+.dropdown-item.active {
+    background-color: rgba(115, 165, 255, 0.3)
 }

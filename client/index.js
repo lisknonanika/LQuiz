@@ -117,9 +117,9 @@ router.get("/create-question", (req, res) => {
 });
 
 /**
- * GET: answer
+ * GET: my-question
  */
-router.get("/answer", (req, res) => {
+router.get("/my-question", (req, res) => {
     (async () => {
         req.session.message = null;
         if (!req.session.address) {
@@ -127,7 +127,29 @@ router.get("/answer", (req, res) => {
             res.redirect('/');
             return;
         }
-        res.render("answer", {address: req.session.address});
+        res.render("my-question", {address: req.session.address});
+    })().catch((err) => {
+        // SYSTEM ERROR
+        console.log(err);
+        req.session.address = null;
+        req.session.message = null;
+        res.status(500);
+        res.render("500");
+    });
+});
+
+/**
+ * GET: my-answer
+ */
+router.get("/my-answer", (req, res) => {
+    (async () => {
+        req.session.message = null;
+        if (!req.session.address) {
+            req.session.message = {type: "warning", msg: "Please Re-Login"};
+            res.redirect('/');
+            return;
+        }
+        res.render("my-answer", {address: req.session.address});
     })().catch((err) => {
         // SYSTEM ERROR
         console.log(err);

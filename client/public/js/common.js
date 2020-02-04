@@ -145,12 +145,45 @@ const logout = () => {
     document.forms[0].submit();
 }
 
-const getQuestion = (isOpen, offset) => {
-    (async () => {
-        const url = isOpen? "oepn-question": "close-question"
-        const address = document.querySelector("#address").value.toUpperCase();
-        const param = `address=${address}&offset=${offset}`;
-        const ret = await doGet(`http://127.0.0.1:30001/api/${url}?${param}`);
-        document.querySelector("#question-list").innerHTML = JSON.stringify(ret.response);
-    })();
+const getQuestion = async (isOpen, offset) => {
+    const url = isOpen? "oepn-question": "close-question"
+    const userId = document.querySelector("#address").value.toUpperCase();
+    const param = `userId=${userId}&offset=${offset}`;
+    const ret = await doGet(`http://127.0.0.1:30001/api/${url}`, param);
+    document.querySelector("#question-list").innerHTML = JSON.stringify(ret.response);
+}
+
+const getQuestionByCondition = async (offset, id, senderId) => {
+    let params = [];
+    if (offset) params.push(`offset=${offset}`);
+    if (id) params.push(`id=${id}`);
+    if (senderId) params.push(`senderId=${senderId}`);
+
+    let param = "";
+    if (params.length > 0) param = params.join("&");
+    const ret = await doGet("http://127.0.0.1:30001/api/question", param);
+    document.querySelector("#question-list").innerHTML = JSON.stringify(ret.response);
+}
+
+const getMyQuestion = async (offset) => {
+    const senderId = document.querySelector("#address").value.toUpperCase();
+    await getQuestionByCondition(offset, "", senderId);
+}
+
+const getAnswerByCondition = async (offset, id, senderId, qid) => {
+    let params = [];
+    if (offset) params.push(`offset=${offset}`);
+    if (id) params.push(`id=${id}`);
+    if (senderId) params.push(`senderId=${senderId}`);
+    if (qid) params.push(`qid=${qid}`);
+
+    let param = "";
+    if (params.length > 0) param = params.join("&");
+    const ret = await doGet("http://127.0.0.1:30001/api/answer", param);
+    document.querySelector("#answer-list").innerHTML = JSON.stringify(ret.response);
+}
+
+const getMyAnswer = async (offset) => {
+    const senderId = document.querySelector("#address").value.toUpperCase();
+    await getAnswerByCondition(offset, "", senderId, "");
 }
