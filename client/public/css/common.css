@@ -71,16 +71,42 @@ input[type="number"]:focus  {
     padding: 0px 5px;
 }
 
-.nav-item.active {
+.nav-link {
     border: 0;
-    border-bottom: 2px solid #708dcf;
+    border-bottom: 2px solid transparent;
+    color: #7387bb !important;
+}
+
+.nav-link:hover {
+    background-color: rgba(255, 255, 255, 0.3);
+    border-bottom: 2px solid #7387bb;
     font-weight: bold;
 }
 
-.nav-link {
-    color: #576a9c !important;
+.nav-link.active,
+.nav-link.active:hover {
+    border: 0;
+    border-bottom: 2px solid #314372;
+    color: #314372 !important;
+    font-weight: bold;
 }
 
-.dropdown-menu {
-    background-color: #F7F9FB;
+.dropdown-toggle {
+    border: 0;
+    border-bottom: 2px solid transparent;
+    color: #314372 !important;
+    font-weight: bold;
+}
+
+.dropdown-toggle:hover {
+    border-bottom: 2px solid #314372;
+    color: #314372 !important;
+}
+
+.dropdown-item {
+    color: #314372 !important;
+}
+
+.dropdown-item:hover {
+    background-color: rgba(115, 165, 255, 0.3);
 }
