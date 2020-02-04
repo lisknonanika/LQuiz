@@ -145,35 +145,20 @@ module.exports.validator = async(req) => {
  * timestamp: Number
  */
 module.exports.createTransaction = (req) => {
-    let param = {
-        data: "",
+    const param = {
+        data: req.body.id,
         asset: {
             quiz: {
-                answer: "",
-                reward: "0"
+                answer: crypto.createHash("sha256").update(req.body.answer, "utf8").digest("hex"),
+                reward: req.body.reward
             }
         },
         fee: "0",
-        recipientId: "",
-        timestamp: 0
+        recipientId: req.body.address,
+        timestamp: myUtils.getTimestamp()
     }
 
-    // Set data
-    param.asset.data = req.body.id;
-    
-    // Set answer
-    param.asset.quiz.answer = crypto.createHash("sha256").update(req.body.answer, "utf8").digest("hex");
-
-    // Set reward
-    param.asset.quiz.reward = req.body.reward;
-
-    // Set recipientId
-    param.recipientId = req.body.address;
-
-    // Set timestamp
-    param.timestamp = myUtils.getTimestamp();
-
-    let tx = new AnswerTransaction(param);
+    const tx = new AnswerTransaction(param);
     if (req.body.secondPassphrase) {
         tx.sign(req.body.passphrase, req.body.secondPassphrase);
     } else {

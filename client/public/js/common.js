@@ -144,3 +144,13 @@ const logout = () => {
     document.querySelector("#frm").action = "http://127.0.0.1:30002/logout";
     document.forms[0].submit();
 }
+
+const getQuestion = (isOpen, offset) => {
+    (async () => {
+        const url = isOpen? "oepn-question": "close-question"
+        const address = document.querySelector("#address").value.toUpperCase();
+        const param = `address=${address}&offset=${offset}`;
+        const ret = await doGet(`http://127.0.0.1:30001/api/${url}?${param}`);
+        document.querySelector("#question-list").innerHTML = JSON.stringify(ret.response);
+    })();
+}

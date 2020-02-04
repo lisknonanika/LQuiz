@@ -67,13 +67,13 @@ module.exports.validator = async(req) => {
 }
 
 module.exports.createTransaction = (req) => {
-    let param = {
+    const param = {
         fee: "0",
         recipientId: req.body.address,
         timestamp: myUtils.getTimestamp()
     }
 
-    let tx = new FaucetTransaction(param);
+    const tx = new FaucetTransaction(param);
     if (req.body.secondPassphrase) {
         tx.sign(req.body.passphrase, req.body.secondPassphrase);
     } else {

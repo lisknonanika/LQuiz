@@ -16,11 +16,10 @@ class QuestionTransaction extends BaseTransaction {
             {
                 address: this.senderId,
             },
+            {
+                address: this.recipientId,
+            },
         ]);
-    }
-
-    validateFee() {
-        return undefined;
     }
 
     /**
@@ -119,15 +118,14 @@ class QuestionTransaction extends BaseTransaction {
         }
 
         // ----------------------------
-        // Fee Check
+        // Amount Check
         // ----------------------------
-        else if (this.fee <= 0 ||
-            myUtils.add(myUtils.mul(this.asset.quiz.reward, this.asset.quiz.num), QuestionTransaction.FEE) !== this.fee.toString()) {
+        else if (this.amount <= 0 || myUtils.mul(this.asset.quiz.reward, this.asset.quiz.num) !== this.amount.toString()) {
             errors.push(
                 new TransactionError(
-                    "Invalid 'fee' defined on transaction",
+                    "Invalid 'amount' defined on transaction",
                     this.id,
-                    ".fee",
+                    ".amount",
                     this.fee.toString(),
                     "Must be equal to the reward * num",
                 )
@@ -137,27 +135,42 @@ class QuestionTransaction extends BaseTransaction {
     }
 
     applyAsset(store) {
+        const errors = [];
+
+        // ----------------------------
+        // Update Sender
+        // ----------------------------
         const sender = store.account.get(this.senderId);
         if (!sender) {
             errors.push(new TransactionError("Not initialized address", this.id));
             return errors;
         }
-
-        const afterBalance = myUtils.sub(sender.balance, this.fee);
+        const afterBalance = myUtils.sub(sender.balance, this.amount);
         if (+afterBalance < 0) {
             errors.push(new TransactionError("Not enough balance", this.id));
             return errors;
         }
-        
-        const newObj = { ...sender, asset: { quiz: this.asset.quiz } };
-        store.account.set(sender.address, newObj);
-        return [];
+        store.account.set(sender.address, { ...sender, balance: afterBalance, asset: { quiz: this.asset.quiz } });
+
+        // ----------------------------
+        // Balance recipient burn
+        // ----------------------------
+        const recipient = store.account.getOrDefault(this.recipientId);
+        store.account.set(recipient.address, { ...recipient, balance: "0" });
+        return errors;
     }
 
     undoAsset(store) {
         const sender = store.account.get(this.senderId);
-        const oldObj = { ...sender, asset: null };
-        store.account.set(sender.address, oldObj);
+        if (sender) {
+            const afterBalance = myUtils.add(sender.balance, this.amount);
+            if (afterBalance > constants.MAX_TRANSACTION_AMOUNT) {
+                errors.push(new TransactionError("Invalid amount", this.id));
+                return errors;
+            }
+            if (+afterBalance < 0) afterBalance = "0";
+            store.account.set(sender.address, { ...sender, balance: afterBalance, asset: null });
+        }
         return [];
     }
 }

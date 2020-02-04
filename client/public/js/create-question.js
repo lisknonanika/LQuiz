@@ -14,7 +14,7 @@ const sendQuestion = () => {
                 Swal.showValidationMessage("Incorrect passphrase");
             } else {
                 const json = {
-                    address: document.querySelector("#address").value,
+                    address: document.querySelector("#address").value.toUpperCase(),
                     question: document.querySelector("#question").value,
                     answer: document.querySelector("#answer").value,
                     reward: document.querySelector("#reward").value,
@@ -23,7 +23,6 @@ const sendQuestion = () => {
                     passphrase: passphrase
                 }
                 const ret = await doPost("http://127.0.0.1:30001/api/question", json);
-                console.log(ret)
                 if (!ret.success) Swal.showValidationMessage(ret.messages? ret.messages[0]: "Send Failed");
                 else return true;
             }

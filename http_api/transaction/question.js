@@ -117,47 +117,25 @@ module.exports.validator = async(req) => {
  * timestamp: Number
  */
 module.exports.createTransaction = (req) => {
-    let param = {
+    const param = {
         asset: {
             quiz: {
-                question: "",
-                answer: "",
-                reward: "0",
-                num: 1,
-                url: "",
+                question: req.body.question,
+                answer: crypto.createHash("sha256").update(req.body.answer, "utf8").digest("hex"),
+                reward: utils.convertLSKToBeddows(req.body.reward),
+                num: req.body.num? req.body.num: 1,
+                url: req.body.url? req.body.url: "",
                 valid: true
             }
         },
-        fee: "0",
-        recipientId: "",
-        timestamp: 0
+        amount: "0",
+        fee: QuestionTransaction.FEE,
+        recipientId: "0L",
+        timestamp: myUtils.getTimestamp()
     }
-
-    // Set question
-    param.asset.quiz.question = req.body.question;
+    param.amount = myUtils.mul(param.asset.quiz.reward, param.asset.quiz.num);
     
-    // Set answer
-    param.asset.quiz.answer = crypto.createHash("sha256").update(req.body.answer, "utf8").digest("hex");
-
-    // Set reward
-    param.asset.quiz.reward = utils.convertLSKToBeddows(req.body.reward);
-    
-    // Set num of people
-    if(req.body.num) param.asset.quiz.num = req.body.num;
-
-    // Set url
-    if (req.body.url) param.asset.quiz.url = req.body.url;
-
-    // Set fee
-    param.fee = myUtils.add(myUtils.mul(param.asset.quiz.reward, param.asset.quiz.num), QuestionTransaction.FEE);
-
-    // Set recipientId
-    param.recipientId = req.body.address;
-
-    // Set timestamp
-    param.timestamp = myUtils.getTimestamp();
-
-    let tx = new QuestionTransaction(param);
+    const tx = new QuestionTransaction(param);
     if (req.body.secondPassphrase) {
         tx.sign(req.body.passphrase, req.body.secondPassphrase);
     } else {

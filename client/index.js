@@ -38,7 +38,7 @@ router.get("/", (req, res) => {
             message = req.session.message.msg;
             req.session.message = null;
         }
-        if (req.session.address) res.redirect("/top");
+        if (req.session.address) res.redirect("/open-question");
         else res.render("index", {msg: message, type: messageType});
     })().catch((err) => {
         // SYSTEM ERROR
@@ -51,9 +51,9 @@ router.get("/", (req, res) => {
 });
 
 /**
- * GET: top
+ * GET: open-question
  */
-router.get("/top", (req, res) => {
+router.get("/open-question", (req, res) => {
     (async () => {
         req.session.message = null;
         if (!req.session.address) {
@@ -61,7 +61,7 @@ router.get("/top", (req, res) => {
             res.redirect('/');
             return;
         }
-        res.render("top", {address: req.session.address});
+        res.render("open-question", {address: req.session.address});
     })().catch((err) => {
         // SYSTEM ERROR
         console.log(err);
@@ -73,9 +73,9 @@ router.get("/top", (req, res) => {
 });
 
 /**
- * GET: question
+ * GET: close-question
  */
-router.get("/question", (req, res) => {
+router.get("/close-question", (req, res) => {
     (async () => {
         req.session.message = null;
         if (!req.session.address) {
@@ -83,7 +83,29 @@ router.get("/question", (req, res) => {
             res.redirect('/');
             return;
         }
-        res.render("question", {address: req.session.address});
+        res.render("close-question", {address: req.session.address});
+    })().catch((err) => {
+        // SYSTEM ERROR
+        console.log(err);
+        req.session.address = null;
+        req.session.message = null;
+        res.status(500);
+        res.render("500");
+    });
+});
+
+/**
+ * GET: create-question
+ */
+router.get("/create-question", (req, res) => {
+    (async () => {
+        req.session.message = null;
+        if (!req.session.address) {
+            req.session.message = {type: "warning", msg: "Please Re-Login"};
+            res.redirect('/');
+            return;
+        }
+        res.render("create-question", {address: req.session.address});
     })().catch((err) => {
         // SYSTEM ERROR
         console.log(err);

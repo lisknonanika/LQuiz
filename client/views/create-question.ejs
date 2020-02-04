@@ -3,15 +3,14 @@
 <head>
     <meta content="width=device-width,initial-scale=1.0" name="viewport">
     <meta charset="utf-8">
-    <title>LQuiz:Question Page</title>
+    <title>LQuiz:Create Question Page</title>
     <%- include('parts/head') %>
-    <script src="../js/question.js"></script>
+    <script src="../js/create-question.js"></script>
 </head>
 <body>
     <form method="post" id="frm"></form>
-    <button type="button" id="btn-logoff" class="btn btn-link" onclick="logout()">Logout</button>
+    <%- include('parts/menu', {current_menu: 3}) %>
     <div class="container">
-        <input type="hidden" name="address" id="address" value="<%= address %>">
         <input type="text" name="question" id="question" class="input" placeholder="question" required>
         <input type="text" name="answer" id="answer" class="input" placeholder="answer" required>
         <input type="number" name="reward" id="reward" class="input" placeholder="reward" required>

@@ -15,6 +15,15 @@ app.use(bodyParser.json());
 app.use(helmet());
 
 const router = express.Router();
+
+const getErrorMessage = (err) => {
+    let errs = [];
+    if (err.errors && Array.isArray(err.errors)) {
+        for (msg of err.errors) if (msg.message) errs.push(msg.message);
+    } else if (err.message) errs.push(err.message);
+    return errs;
+}
+
 app.use(
     "/api",
     (req, res, next) => {
@@ -31,7 +40,6 @@ app.use(
  */
 router.post("/question", (req, res) => {
     (async () => {
-        console.log(req.body)
         // Validation
         const errors = await question.validator(req);
         if (errors.length > 0) {
@@ -54,7 +62,8 @@ router.post("/question", (req, res) => {
         res.json({success: true, response: data});
 
     })().catch((err) => {
-        res.json({success: false, err: err});
+        console.log(err.errors);
+        res.json({success: false, messages: getErrorMessage(err)});
     });
 });
 
@@ -85,7 +94,8 @@ router.post("/answer", (req, res) => {
         res.json({success: true, response: data});
 
     })().catch((err) => {
-        res.json({success: false, err: err});
+        console.log(err);
+        res.json({success: false, messages: getErrorMessage(err)});
     });
 });
 
@@ -116,7 +126,8 @@ router.post("/faucet", (req, res) => {
         res.json({success: true, response: data});
 
     })().catch((err) => {
-        res.json({success: false, err: err});
+        console.log(err);
+        res.json({success: false, messages: getErrorMessage(err)});
     });
 });
 
@@ -153,7 +164,8 @@ router.get("/question", (req, res) => {
         res.json({success: true, response: trx.data});
 
     })().catch((err) => {
-        res.json({success: false, err: err});
+        console.log(err);
+        res.json({success: false, messages: getErrorMessage(err)});
     });
 });
 
@@ -192,7 +204,8 @@ router.get("/answer", (req, res) => {
         res.json({success: true, response: trx.data});
 
     })().catch((err) => {
-        res.json({success: false, err: err});
+        console.log(err);
+        res.json({success: false, messages: getErrorMessage(err)});
     });
 });
 
@@ -225,7 +238,8 @@ router.get("/oepn-question", (req, res) => {
         res.json({success: true, response: trx.data});
 
     })().catch((err) => {
-        res.json({success: false, err: err});
+        console.log(err);
+        res.json({success: false, messages: getErrorMessage(err)});
     });
 });
 
@@ -258,7 +272,8 @@ router.get("/close-question", (req, res) => {
         res.json({success: true, response: trx.data});
 
     })().catch((err) => {
-        res.json({success: false, err: err});
+        console.log(err);
+        res.json({success: false, messages: getErrorMessage(err)});
     });
 });
 

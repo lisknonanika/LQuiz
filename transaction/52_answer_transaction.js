@@ -129,16 +129,16 @@ class AnswerTransaction extends BaseTransaction {
             return errors;
         }
 
+        // ----------------------------
+        // Update Sender
+        // ----------------------------
         const sender = store.account.getOrDefault(this.senderId);
-        
         const afterBalance = myUtils.add(sender.balance, this.asset.quiz.reward);
         if (afterBalance > constants.MAX_TRANSACTION_AMOUNT) {
             errors.push(new TransactionError("Invalid reward", this.id));
             return errors;
         }
-
-        const newObj = { ...sender, balance: afterBalance.toString(), asset: this.asset };
-        store.account.set(sender.address, newObj);
+        store.account.set(sender.address, { ...sender, balance: afterBalance.toString(), asset: this.asset });
         return [];
     }
 
