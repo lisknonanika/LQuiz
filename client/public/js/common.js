@@ -176,3 +176,13 @@ const getAnswerByCondition = async (params) => {
     }
     return await doGet("http://127.0.0.1:30001/api/answer", param);
 }
+
+const getBalance = (val) => {
+    if (!val) return 0;
+    else return lisk.transaction.utils.convertBeddowsToLSK(val);
+}
+
+const getLocalDate = (val) => {
+    if (!val) return "";
+    else return new Date((val * 1000) + Date.parse(lisk.transaction.constants.EPOCH_TIME)).toLocaleString();
+}

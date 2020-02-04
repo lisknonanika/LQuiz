@@ -22,7 +22,7 @@ input[type="password"]:focus,
 input[type="number"]:focus  {
     outline: none;
     border: 0;
-    border-bottom: 2px solid #08aeb9;
+    border-bottom: 2px solid #69dce4;
     width: 100%;
     padding: 5px 10px;
 }
@@ -31,12 +31,14 @@ input[type="number"]:focus  {
     font-family: 'Galindo', cursive;
 }
 
-#question-list {
-    word-wrap: break-word;
-    word-break: break-all;
-    white-space: pre-wrap;
+.passphrase {
+    width: 60px !important;
+    margin: 5px !important;
 }
 
+/*
+ override: bootstrap4
+*/
 .alert {
     padding-top: 5px;
     padding-bottom: 5px;
@@ -49,14 +51,6 @@ input[type="number"]:focus  {
     content: "message: ";
 }
 
-.passphrase {
-    width: 60px !important;
-    margin: 5px !important;
-}
-
-/*
- override: bootstrap4
-*/
 .navbar {
     background-color:#DFE6F2;
     padding: 0px 15px;

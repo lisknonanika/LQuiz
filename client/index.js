@@ -4,6 +4,7 @@ const express = require("express");
 const session = require("express-session");
 const bodyParser = require("body-parser");
 const helmet = require("helmet");
+const { request } = require("../utility")
 
 const app = express();
 app.set("view engine", "ejs");
@@ -220,6 +221,37 @@ router.post("/guest", (req, res) => {
         req.session.message = null;
         res.status(500);
         res.render("500");
+    });
+});
+
+/**
+ * GET: account
+ */
+router.get("/account", (req, res) => {
+    (async () => {
+        req.session.message = null;
+        if (!req.session.address) {
+            res.json({success: false, err: "Login is needed"});
+            return;
+        }
+
+        if (req.session.address.toUpperCase() == "GUEST") {
+            res.json({success: false, err: "Guest information not available"});
+            return;
+        }
+
+        const acounts = await request({
+            method: "GET",
+            url: `http://127.0.0.1:4000/api/accounts?address=${req.session.address}`,
+            json: true
+        });
+        if (!acounts.data || acounts.data.length === 0) res.json({success: true, response: {}});
+        else res.json({success: true, response: acounts.data[0]});
+    })().catch((err) => {
+        // SYSTEM ERROR
+        console.log(err);
+        req.session.message = null;
+        res.json({success: false, err: "Failed to get account information"});
     });
 });
 

@@ -1,0 +1,86 @@
+@charset "utf-8";
+#question-list {
+    line-height: 1;
+    font-size: 0.8rem;
+}
+
+#question-list .row {
+    margin-top: 10px;
+}
+
+#question-list .item {
+    border-radius: 5px;
+    border: 1px solid #254898;
+}
+
+#question-list .input-area {
+    margin: 10px 0;
+    border-radius: 5px;
+    border: 1px solid #93dbe0;
+}
+
+#question-list .info {
+    padding: 10px 5px;
+    font-weight: bold;
+}
+
+#question-list .info-right {
+    padding: 10px 5px;
+    text-align: right;
+    font-weight: bold;
+}
+
+#question-list .label {
+    background-color: #254898;
+    padding: 5px;
+    border-radius: 5px 5px 0 0;
+    padding: 10px 5px;
+    margin-top: 10px;
+    font-weight: bold;
+    color: #fff;
+}
+
+#question-list .value {
+    border: 1px solid #254898;
+    padding: 10px 5px;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    word-break: break-all;
+}
+
+#question-list .value-ellipsis {
+    border: 1px solid #254898;
+    padding: 10px 5px;
+    white-space: nowrap;
+    word-wrap: normal;
+    word-break: normal;
+    text-overflow: ellipsis;
+    overflow: hidden;
+}
+
+#question-list .button {
+    padding: 5px 0px;
+}
+
+#question-list .btn {
+    background-color: #DFE6F2;
+    width: 100%;
+}
+
+#question-list .input-area .btn {
+    background-color: #b1eaee;
+    width: 100%;
+    margin-bottom: 10px;
+}
+
+#question-list .hidden {
+    display: none;
+}
+
+.alert {
+    font-size: 1.25rem;
+}
+
+.alert::before {
+    content: "";
+}
