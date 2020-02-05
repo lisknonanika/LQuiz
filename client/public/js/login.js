@@ -17,7 +17,7 @@ window.addEventListener('resize', () => {
 
 const guestLogin = () => {
     document.querySelector(".container").style = "visibility: hidden;";
-    document.querySelector("#frm").action = "http://127.0.0.1:30002/guest";
+    document.querySelector("#frm").action = "./guest";
     document.forms[0].submit();
     return true;
 }

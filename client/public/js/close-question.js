@@ -10,8 +10,8 @@ const openclose = (num) => {
     }
 }
 
-const getOpenQuestion = async (offset) => {
-    const ret = await getQuestion(true, offset);
+const getCloseQuestion = async (offset) => {
+    const ret = await getQuestion(false, offset);
     let html = "";
     if (!ret.success) {
         html += `<div class="row">`;
@@ -36,13 +36,13 @@ const getOpenQuestion = async (offset) => {
         html += `<div class="row">`;
         html += `    <div class="col-1"></div>`;
         html += `    <div class="col-10 item">`;
-        html += `        <div class="col-12 info"><i class="fas fa-lock-open"></i>QuestionID: ${data.id}</div>`;
+        html += `        <div class="col-12 info"><i class="fas fa-lock"></i>QuestionID: ${data.id}</div>`;
         html += `        <div class="col-12 label" style="margin-top: 0;">Question</div>`;
         html += `        <div class="col-12 value-ellipsis" id="question${i}">${data.question}</div>`;
         html += `        <div class="hidden" id="detail${i}">`;
-        if (data.url) {
+        if (!data.url) {
             html += `            <div class="col-12 label">URL <i class="fas fa-link"></i></div>`;
-            html += `            <div class="col-12 value-ellipsis"><a href="${data.url}" target="_blank">${data.url}</a></div>`;
+            html += `            <div class="col-12 value-ellipsis"><a href="${data.url}" target="_blank">http://www.google.com</a></div>`;
         }
         html += `            <div class="col-12 label">Answer</div>`;
         html += `            <div class="col-12 value">${data.answer}</div>`;
@@ -50,10 +50,6 @@ const getOpenQuestion = async (offset) => {
         html += `            <div class="col-12 value">${getBalance(data.reward)}LSK</div>`;
         html += `            <div class="col-12 label">Answered / Number <i class="fas fa-list-alt"></i></div>`;
         html += `            <div class="col-12 value" onclick="answeredInfo('${data.id}')"><a href="javascript:void 0;">${data.answered} / ${data.num}</a></div>`;
-        html += `            <div class="col-12 input-area">`;
-        html += `                <div class="col-12 info"><input type="text" id="answer${i}" placeholder="Input Answer"></div>`;
-        html += `                <button type="button" id="answer${i}" class="btn btn-sm" onclick="sendAnswer(${i})"><i class="fas fa-share-square"></i>Send Answer</button>`;
-        html += `            </div>`;
         html += `        </div>`;
         html += `        <div class="col-12 button">`;
         html += `            <button type="button" id="openclose${i}" class="btn btn-sm" onclick="openclose(${i})"><i class="fas fa-angle-down"></i>Open</button>`;

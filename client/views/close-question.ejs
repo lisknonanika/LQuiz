@@ -5,20 +5,14 @@
     <meta charset="utf-8">
     <title>LQuiz:Open Question Page</title>
     <%- include('parts/head') %>
-    <script>
-        const getCloseQuestion = async (offset) => {
-            const ret = await getQuestion(false, offset);
-            document.querySelector("#question-list").innerHTML = JSON.stringify(ret.response);
-        }
-    </script>
+    <link rel="stylesheet" href="../css/question.css">
+    <script src="../js/close-question.js"></script>
 </head>
 <body onload="getCloseQuestion(0)">
     <form method="post" id="frm"></form>
     <%- include('parts/menu', {current_menu: 2}) %>
     <div class="container">
-        <div class="row">
-            <div class="col-12" id="question-list"></div>
-        </div>
+        <div id="question-list"></div>
     </div>
 </body>
 </html>

@@ -1,3 +1,5 @@
+const API_URL = "http://127.0.0.1:30001/api";
+
 const doPost = (url, param) => {
     const fetchParam = {
         mode: 'cors',
@@ -125,7 +127,7 @@ const createAccount = () => {
         allowOutsideClick: false,
         showLoaderOnConfirm: true,
         preConfirm: async() => {
-            const faucet = await doPost("http://127.0.0.1:30001/api/faucet", {passphrase: passphrase})
+            const faucet = await doPost(`${API_URL}/faucet`, {passphrase: passphrase})
             if (!faucet.success) {
                 Swal.showValidationMessage("Login Failed");
             } else {
@@ -140,8 +142,32 @@ const createAccount = () => {
     })
 }
 
+const answeredInfo = async (qid) => {
+    let html = "";
+    const ret = await getAnswerByCondition({qid, qid});
+    if (!ret.success) {
+        html += `<div class="alert alert-danger">Failed to get answered data</div>`;
+    } else if (ret.response.length == 0) {
+        html += `<div class="alert alert-info">Data Not Found</div>`;
+    }
+
+    if (ret.response.length >= 3) html += `<div style="overflow-y:auto;height:250px;">`;
+    for (i=0; i < ret.response.length -1; i++) {
+        const data = ret.response[i];
+        html += `<div>${data.senderId}<br>(${getLocalDate(data.timestamp)})</div><hr>`;
+    }
+    if (ret.response.length >= 3) html += `</div>`;
+
+    Swal.fire({
+        title: 'Answered Info',
+        html: html,
+        confirmButtonText: 'OK',
+        allowOutsideClick: false
+    });
+}
+
 const logout = () => {
-    document.querySelector("#frm").action = "http://127.0.0.1:30002/logout";
+    document.querySelector("#frm").action = "./logout";
     document.forms[0].submit();
 }
 
@@ -149,7 +175,7 @@ const getQuestion = async (isOpen, offset) => {
     const url = isOpen? "oepn-question": "close-question"
     const userId = document.querySelector("#address").value.toUpperCase();
     const param = `userId=${userId}&offset=${offset}`;
-    return await doGet(`http://127.0.0.1:30001/api/${url}`, param);
+    return await doGet(`${API_URL}/${url}`, param);
 }
 
 const getQuestionByCondition = async (params) => {
@@ -161,7 +187,7 @@ const getQuestionByCondition = async (params) => {
         if (params.senderId) arr.push(`senderId=${params.senderId}`);
         if (arr.length > 0) param = arr.join("&");
     }
-    return await doGet("http://127.0.0.1:30001/api/question", param);
+    return await doGet(`${API_URL}/question`, param);
 }
 
 const getAnswerByCondition = async (params) => {
@@ -171,10 +197,10 @@ const getAnswerByCondition = async (params) => {
         if (params.offset) arr.push(`offset=${params.offset}`);
         if (params.id) arr.push(`id=${params.id}`);
         if (params.senderId) arr.push(`senderId=${params.senderId}`);
-        if (params.qid) params.push(`qid=${params.qid}`);
+        if (params.qid) arr.push(`qid=${params.qid}`);
         if (arr.length > 0) param = arr.join("&");
     }
-    return await doGet("http://127.0.0.1:30001/api/answer", param);
+    return await doGet(`${API_URL}/answer`, param);
 }
 
 const getBalance = (val) => {

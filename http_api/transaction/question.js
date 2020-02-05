@@ -7,6 +7,15 @@ const QuestionTransaction = require("../../transaction/51_question_transaction")
 
 module.exports.validator = async(req) => {
     let errors = [];
+
+    if (req.body.question) req.body.question = req.body.question.trim();
+    if (req.body.answer) req.body.answer = req.body.answer.trim().toUpperCase();
+    if (req.body.reward) req.body.reward = req.body.reward.trim();
+    if (req.body.num) req.body.num = req.body.num.trim();
+    if (req.body.url) req.body.url = req.body.url.trim();
+    if (req.body.address) req.body.address = req.body.address.trim();
+    if (req.body.passphrase) req.body.passphrase = req.body.passphrase.trim();
+    if (req.body.secondPassphrase) req.body.secondPassphrase = req.body.secondPassphrase.trim();
     
     // ----------------------------
     // Question Field Check

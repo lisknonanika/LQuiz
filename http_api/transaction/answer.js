@@ -8,6 +8,12 @@ const AnswerTransaction = require("../../transaction/52_answer_transaction");
 module.exports.validator = async(req) => {
     let errors = [];
 
+    if (req.body.id) req.body.id = req.body.id.trim();
+    if (req.body.answer) req.body.answer = req.body.answer.trim().toUpperCase();
+    if (req.body.address) req.body.address = req.body.address.trim();
+    if (req.body.passphrase) req.body.passphrase = req.body.passphrase.trim();
+    if (req.body.secondPassphrase) req.body.secondPassphrase = req.body.secondPassphrase.trim();
+
     // ----------------------------
     // Id Field Check
     // ----------------------------

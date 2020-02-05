@@ -51,9 +51,17 @@ input[type="number"]:focus  {
     content: "message: ";
 }
 
+.container {
+    z-index: 500;
+}
+
 .navbar {
     background-color:#DFE6F2;
     padding: 0px 15px;
+    position: fixed;
+    top: 0;
+    width: 100%;
+    z-index: 1000;
 }
 
 .navbar-brand {

@@ -2,6 +2,8 @@
 #question-list {
     line-height: 1;
     font-size: 0.8rem;
+    margin-bottom: 100px;
+    margin-top: 80px;
 }
 
 #question-list .row {
@@ -58,6 +60,10 @@
     overflow: hidden;
 }
 
+#question-list a {
+    display: block;;
+}
+
 #question-list .button {
     padding: 5px 0px;
 }
@@ -65,6 +71,10 @@
 #question-list .btn {
     background-color: #DFE6F2;
     width: 100%;
+}
+
+#question-list .input-area input[type="text"] {
+    text-transform: uppercase;
 }
 
 #question-list .input-area .btn {

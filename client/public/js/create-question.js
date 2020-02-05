@@ -22,7 +22,7 @@ const sendQuestion = () => {
                     url: document.querySelector("#url").value,
                     passphrase: passphrase
                 }
-                const ret = await doPost("http://127.0.0.1:30001/api/question", json);
+                const ret = await doPost(`${API_URL}/question`, json);
                 if (!ret.success) Swal.showValidationMessage(ret.messages? ret.messages[0]: "Send Failed");
                 else return true;
             }
