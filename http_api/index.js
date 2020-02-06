@@ -1,5 +1,4 @@
 const express = require("express");
-const session = require("express-session");
 const bodyParser = require("body-parser");
 const helmet = require("helmet");
 const { request, checkUtil } = require("../utility");
@@ -277,5 +276,5 @@ router.get("/close-question", (req, res) => {
     });
 });
 
-app.listen(30001);
+app.listen(3101);
 console.log("http_api start");

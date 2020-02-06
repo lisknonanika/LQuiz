@@ -260,5 +260,5 @@ app.use((req, res, next) => {
     res.render("404");
 });
 
-app.listen(30002);
+app.listen(3102);
 console.log(`Client Start`);

@@ -27,6 +27,10 @@ input[type="number"]:focus  {
     padding: 5px 10px;
 }
 
+hr {
+    margin: 5px;
+}
+
 .title {
     font-family: 'Galindo', cursive;
 }
@@ -34,6 +38,16 @@ input[type="number"]:focus  {
 .passphrase {
     width: 60px !important;
     margin: 5px !important;
+}
+
+.cofirm-content {
+    font-size: 0.9rem;
+    overflow-y: auto;
+    max-height: 150px;
+    margin: 5px;
+    padding: 5px;
+    background-color: #eee;
+    border-radius: 5px;
 }
 
 /*
@@ -115,4 +129,18 @@ input[type="number"]:focus  {
 
 .dropdown-item.active {
     background-color: rgba(115, 165, 255, 0.3)
+}
+
+/*
+ override: SweetAlaet2
+*/
+.swal2-icon {
+    height: 4em;
+    width: 4em;
+    line-height: 4em;
+    margin-bottom: 1.25em;
+}
+
+.swal2-icon-content {
+    font-size: 2.5em;
 }

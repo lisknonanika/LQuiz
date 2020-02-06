@@ -42,10 +42,8 @@ const getOpenQuestion = async (offset) => {
         html += `        <div class="hidden" id="detail${i}">`;
         if (data.url) {
             html += `            <div class="col-12 label">URL <i class="fas fa-link"></i></div>`;
-            html += `            <div class="col-12 value-ellipsis"><a href="${data.url}" target="_blank">${data.url}</a></div>`;
+            html += `            <div class="col-12 value-ellipsis" onclick="confirmOutLink('${data.url}');"><a href="javascript:void 0;">${data.url}</a></div>`;
         }
-        html += `            <div class="col-12 label">Answer</div>`;
-        html += `            <div class="col-12 value">${data.answer}</div>`;
         html += `            <div class="col-12 label">Reward</div>`;
         html += `            <div class="col-12 value">${getBalance(data.reward)}LSK</div>`;
         html += `            <div class="col-12 label">Answered / Number <i class="fas fa-list-alt"></i></div>`;
@@ -60,6 +58,7 @@ const getOpenQuestion = async (offset) => {
         html += `        </div>`;
         html += `        <div class="col-12 info-right" style="padding-bottom: 5px;">Author: ${data.senderId}</div>`;
         html += `        <div class="col-12 info-right" style="padding-top: 5px;">Timestamp: ${getLocalDate(data.timestamp)}</div>`;
+        html += `        <input type="hidden" id="answer${i}" value="${data.answer}">`;
         html += `    </div>`;
         html += `    <div class="col-1"></div>`;
         html += `</div>`;

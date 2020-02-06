@@ -1,4 +1,4 @@
-const API_URL = "http://127.0.0.1:30001/api";
+const API_URL = "http://127.0.0.1:3101/api";
 
 const doPost = (url, param) => {
     const fetchParam = {
@@ -149,17 +149,18 @@ const answeredInfo = async (qid) => {
         html += `<div class="alert alert-danger">Failed to get answered data</div>`;
     } else if (ret.response.length == 0) {
         html += `<div class="alert alert-info">Data Not Found</div>`;
+    } else {
+        html += `<div class="cofirm-content">`;
+        for (i=0; i < ret.response.length -1; i++) {
+            const data = ret.response[i];
+            if (i < ret.response.length -2) html += `<div>${data.senderId}&nbsp;(${getLocalDate(data.timestamp)})</div>`;
+            else html += `<div>${data.senderId}&nbsp;(${getLocalDate(data.timestamp)})</div><hr>`;
+        }
+        html += `</div>`;
     }
-
-    if (ret.response.length >= 3) html += `<div style="overflow-y:auto;height:250px;">`;
-    for (i=0; i < ret.response.length -1; i++) {
-        const data = ret.response[i];
-        html += `<div>${data.senderId}<br>(${getLocalDate(data.timestamp)})</div><hr>`;
-    }
-    if (ret.response.length >= 3) html += `</div>`;
 
     Swal.fire({
-        title: 'Answered Info',
+        title: '',
         html: html,
         confirmButtonText: 'OK',
         allowOutsideClick: false
@@ -211,4 +212,19 @@ const getBalance = (val) => {
 const getLocalDate = (val) => {
     if (!val) return "";
     else return new Date((val * 1000) + Date.parse(lisk.transaction.constants.EPOCH_TIME)).toLocaleString();
+}
+
+const confirmOutLink = (url) => {
+    Swal.fire({
+        title: "",
+        html: `
+                <div>Make sure this URL is not dangerous.</div>
+                <div class="cofirm-content" style="color :#DD557B;">${url}</div>
+            `,
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Jump'
+      }).then((result) => {
+          if (result.value) window.open(url, "_blank");
+      })
 }
