@@ -152,8 +152,8 @@ module.exports.validator = async(req) => {
  */
 module.exports.createTransaction = (req) => {
     const param = {
-        data: req.body.id,
         asset: {
+            data: req.body.id,
             quiz: {
                 answer: crypto.createHash("sha256").update(req.body.answer, "utf8").digest("hex"),
                 reward: req.body.reward

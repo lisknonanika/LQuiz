@@ -58,7 +58,7 @@ router.post("/question", (req, res) => {
             json: true
         });
 
-        res.json({success: true, response: data});
+        res.json({success: true, response: {id:tx.id, ...data}});
 
     })().catch((err) => {
         console.log(err.errors);
@@ -90,7 +90,7 @@ router.post("/answer", (req, res) => {
             json: true
         });
 
-        res.json({success: true, response: data});
+        res.json({success: true, response: {id:tx.id, ...data}});
 
     })().catch((err) => {
         console.log(err);

@@ -1,12 +1,37 @@
 @charset "utf-8";
 .container {
-    margin-top: 70px;
+    margin-top: 65px;
+    margin-bottom: 100px;
+}
+
+#question-count {
+    font-size: 0.5rem;
+    background-color: rgba(0, 0, 0, 0.1);
+    position: absolute;
+    left: 5px;
+    padding: 3px;
+}
+
+#question-page {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+    margin-top: 5px;
+}
+
+#question-page .page {
+    font-size: 1.1rem;
+    text-align: center;
+    color: #666;
+    margin: 1px;
+    background-color: rgba(77, 168, 184, 0.3);
+    border-radius: 5px;
+    padding: 7px 5px;
 }
 
 #question-list {
     line-height: 1;
     font-size: 0.8rem;
-    margin-bottom: 100px;
 }
 
 #question-list .row {
@@ -96,4 +121,8 @@
 
 .alert::before {
     content: "";
+}
+
+.container .dropdown-toggle {
+    font-size: 0.8rem;
 }

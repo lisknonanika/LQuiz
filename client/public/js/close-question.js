@@ -37,6 +37,7 @@ const getCloseQuestion = async () => {
         html += `    <div class="col-1"></div>`;
         html += `</div>`;
         document.querySelector("#question-list").innerHTML = html;
+        document.querySelector(".container .dropdown-toggle").style = "display:none"
         return;
     }
     for (i=0; i < ret.response.length; i++) {
@@ -48,12 +49,10 @@ const getCloseQuestion = async () => {
         html += `        <div class="col-12 label" style="margin-top: 0;">Question</div>`;
         html += `        <div class="col-12 value-ellipsis" id="question${i}">${data.question}</div>`;
         html += `        <div class="hidden" id="detail${i}">`;
-        if (!data.url) {
+        if (data.url) {
             html += `            <div class="col-12 label">URL <i class="fas fa-link"></i></div>`;
-            html += `            <div class="col-12 value-ellipsis"><a href="${data.url}" target="_blank">http://www.google.com</a></div>`;
+            html += `            <div class="col-12 value-ellipsis"><a href="${data.url}" target="_blank">${data.url}</a></div>`;
         }
-        html += `            <div class="col-12 label">Answer</div>`;
-        html += `            <div class="col-12 value">${data.answer}</div>`;
         html += `            <div class="col-12 label">Reward</div>`;
         html += `            <div class="col-12 value">${getBalance(data.reward)}LSK</div>`;
         html += `            <div class="col-12 label">Answered / Number <i class="fas fa-list-alt"></i></div>`;
@@ -68,6 +67,22 @@ const getCloseQuestion = async () => {
         html += `    <div class="col-1"></div>`;
         html += `</div>`;
     }
+    const maxPage = ret.response.length > 0? Math.ceil(ret.response[0].max_count / 100): 1;
+    const currentPage = isValidNumNoLimit(offset)? +offset + 1: 1;
+    document.querySelector("#question-count").innerHTML = `Page: ${currentPage} / ${maxPage}`;
+    document.querySelector("#question-count").style = `top: ${$('.navbar').height()+5}px`;
+    if (maxPage > 1) {
+        const prevPage = (+offset == 0)? 0: +offset - 1;
+        const nextPage = (+currentPage == +maxPage)? +maxPage: +currentPage + 1;
+        html += `<div id="question-page">`;
+        html += `    <div class="col-2"></div>`;
+        html += `    <div class="col-2 page" onclick="page(0)"><i class="fas fa-angle-double-left"></i></div>`;
+        html += `    <div class="col-2 page" onclick="page(${prevPage})"><i class="fas fa-angle-left"></i></div>`;
+        html += `    <div class="col-2 page" onclick="page(${nextPage - 1})"><i class="fas fa-angle-right"></i></div>`;
+        html += `    <div class="col-2 page" onclick="page(${maxPage - 1})"><i class="fas fa-angle-double-right"></i></div>`;
+        html += `    <div class="col-2"></div>`;
+        html += `</div>`;
+    }
     document.querySelector("#question-list").innerHTML = html;
 }
 
@@ -76,6 +91,13 @@ const reloadCloseQuestion = () => {
     const offset = document.querySelector("#offset").value;
     if (offset) param += `offset=${offset}`;
 
+    const sort = document.querySelector("#sort-select").value;
+    if (sort) param += `&sort=${sort}`;
+    location.href = `./close-question?${param}`;
+}
+
+const page = (offset) => {
+    let param = `offset=${offset}`;
     const sort = document.querySelector("#sort-select").value;
     if (sort) param += `&sort=${sort}`;
     location.href = `./close-question?${param}`;

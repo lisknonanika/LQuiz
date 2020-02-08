@@ -144,17 +144,17 @@ const createAccount = () => {
 
 const answeredInfo = async (qid) => {
     let html = "";
-    const ret = await getAnswerByCondition({qid, qid});
+    const ret = await getAnswerByCondition({qid: qid});
     if (!ret.success) {
         html += `<div class="alert alert-danger">Failed to get answered data</div>`;
     } else if (ret.response.length == 0) {
         html += `<div class="alert alert-info">Data Not Found</div>`;
     } else {
         html += `<div class="cofirm-content">`;
-        for (i=0; i < ret.response.length -1; i++) {
+        for (i=0; i < ret.response.length; i++) {
             const data = ret.response[i];
-            if (i < ret.response.length -2) html += `<div>${data.senderId}&nbsp;(${getLocalDate(data.timestamp)})</div>`;
-            else html += `<div>${data.senderId}&nbsp;(${getLocalDate(data.timestamp)})</div><hr>`;
+            if (i < ret.response.length - 1) html += `<div>${data.senderId}&nbsp;(${getLocalDate(data.timestamp)})</div><hr>`;
+            else html += `<div>${data.senderId}&nbsp;(${getLocalDate(data.timestamp)})</div>`;
         }
         html += `</div>`;
     }
@@ -217,7 +217,7 @@ const confirmOutLink = (url) => {
         icon: 'warning',
         showCancelButton: true,
         confirmButtonText: 'Jump'
-      }).then((result) => {
-          if (result.value) window.open(url, "_blank");
-      })
+    }).then((result) => {
+        if (result.value) window.open(url, "_blank");
+    });
 }

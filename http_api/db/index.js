@@ -142,6 +142,7 @@ module.exports.findOpenCloseQuestion = async (isOpen, params) => {
                        AND trs52."asset" ->> 'data' = trs51."id")::INT as answered
               FROM trs as trs51
              WHERE trs51."type" = 51
+               AND trs51."senderId" <> $1
                AND (
                        (trs51."asset" -> 'quiz' ->> 'num')::INT ${isOpen? ">": "<="} (
                            SELECT count(*)
@@ -149,7 +150,6 @@ module.exports.findOpenCloseQuestion = async (isOpen, params) => {
                            WHERE trs52."type" = 52
                              AND trs52."asset" ->> 'data' = trs51."id"
                        )
-                       ${isOpen? "AND": "OR"} trs51."senderId" ${isOpen? "<>": "="} $1
                        ${isOpen? "AND NOT": "OR"} EXISTS (
                            SELECT 1
                              FROM trs as trs52

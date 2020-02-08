@@ -1,4 +1,4 @@
-const { BaseTransaction, TransactionError, constants } = require("@liskhq/lisk-transactions");
+const { BaseTransaction, TransactionError, utils, constants } = require("@liskhq/lisk-transactions");
 const myUtils = require("../utility");
 
 class AnswerTransaction extends BaseTransaction {
