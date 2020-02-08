@@ -45,7 +45,7 @@ module.exports.findQuestion = async (params, offset) => {
              WHERE trs51."type" = 51
                AND ${where} = $1
              ORDER BY timestamp DESC
-             LIMIT 100 OFFSET ${offset}
+             LIMIT 100 OFFSET ${offset*100}
         `;
         const result = await client.query(query, [conditionValue]);
         return {success: true, data: result.rows}
@@ -90,7 +90,7 @@ module.exports.findAnswer = async (params, offset) => {
              WHERE trs."type" = 52
                AND ${where} = $1
              ORDER BY timestamp DESC
-             LIMIT 100 OFFSET ${offset}
+             LIMIT 100 OFFSET ${offset*100}
         `;
         const result = await client.query(query, [conditionValue]);
         return {success: true, data: result.rows}
@@ -111,7 +111,7 @@ module.exports.findOpenCloseQuestion = async (isOpen, params) => {
         const senderId = params.senderId? params.senderId: "0L";
 
         // set offset (default 0)
-        const offset = params.offset? params.offset: 0;
+        const offset = params.offset? +params.offset: 0;
 
         // set sortType (0: DESC, 1: ASC)
         const sortType = params.sortType? "ASC": "DESC";
@@ -123,7 +123,6 @@ module.exports.findOpenCloseQuestion = async (isOpen, params) => {
         } else if (params.sortKey.toUpperCase() == "REWARD") {
             sortKey = `trs51."asset" -> 'quiz' ->> 'reward' ${sortType}, timestamp DESC`;
         }
-        
         client = await pool.connect();
         const query = `
             SELECT trs51."id",
@@ -158,7 +157,7 @@ module.exports.findOpenCloseQuestion = async (isOpen, params) => {
                        )
                    )
             ORDER BY ${sortKey}
-            LIMIT 100 OFFSET ${offset}
+            LIMIT 100 OFFSET ${offset*100}
         `;
         const result = await client.query(query, [senderId, senderId]);
         return {success: true, data: result.rows}

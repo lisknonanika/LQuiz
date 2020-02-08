@@ -70,7 +70,7 @@ hr {
 }
 
 .navbar {
-    background-color:#DFE6F2;
+    background-color:rgb(217, 228, 247);
     padding: 0px 15px;
     position: fixed;
     top: 0;
@@ -114,11 +114,6 @@ hr {
     font-weight: bold;
 }
 
-.dropdown-toggle:hover {
-    border-bottom: 2px solid #314372;
-    color: #314372 !important;
-}
-
 .dropdown-item {
     color: #314372 !important;
 }
@@ -129,6 +124,19 @@ hr {
 
 .dropdown-item.active {
     background-color: rgba(115, 165, 255, 0.3)
+}
+
+@media screen and (max-width:991px) {
+    .navbar {
+        padding-bottom: 5px !important;
+    }
+
+    .nav-link {
+        border-bottom: none !important;
+    }
+    .navbar .dropdown-menu {
+        display: block !important;
+    }
 }
 
 /*

@@ -212,7 +212,7 @@ router.get("/answer", (req, res) => {
  * Get Open Question
  * query: userId, offset, sortKey, sortType
  */
-router.get("/oepn-question", (req, res) => {
+router.get("/open-question", (req, res) => {
     (async () => {
         let params = {
             senderId: "0L",

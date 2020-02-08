@@ -172,13 +172,6 @@ const logout = () => {
     document.forms[0].submit();
 }
 
-const getQuestion = async (isOpen, offset) => {
-    const url = isOpen? "oepn-question": "close-question"
-    const userId = document.querySelector("#address").value.toUpperCase();
-    const param = `userId=${userId}&offset=${offset}`;
-    return await doGet(`${API_URL}/${url}`, param);
-}
-
 const getQuestionByCondition = async (params) => {
     let param = "";
     if (params) {

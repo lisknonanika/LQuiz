@@ -62,7 +62,12 @@ router.get("/open-question", (req, res) => {
             res.redirect('/');
             return;
         }
-        res.render("open-question", {address: req.session.address});
+        let params = {
+            address: req.session.address,
+            offset: req.query.offset? req.query.offset: 0,
+            sort: req.query.sort? req.query.sort: "timestamp_0"
+        }
+        res.render("open-question", params);
     })().catch((err) => {
         // SYSTEM ERROR
         console.log(err);
@@ -84,7 +89,12 @@ router.get("/close-question", (req, res) => {
             res.redirect('/');
             return;
         }
-        res.render("close-question", {address: req.session.address});
+        let params = {
+            address: req.session.address,
+            offset: req.query.offset? req.query.offset: 0,
+            sort: req.query.sort? req.query.sort: "timestamp_0"
+        }
+        res.render("close-question", params);
     })().catch((err) => {
         // SYSTEM ERROR
         console.log(err);

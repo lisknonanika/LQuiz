@@ -7,11 +7,32 @@
     <%- include('parts/head') %>
     <link rel="stylesheet" href="../css/question.css">
     <script src="../js/open-question.js"></script>
+    <script>
+    $(function () {
+        $('#sort-select').val("<%= sort %>");
+        $('#sort-select').selectpicker();
+    });
+    </script>
 </head>
-<body onload="getOpenQuestion(0)">
+<body onload="getOpenQuestion()">
     <form method="post" id="frm"></form>
+    <input type="hidden" id="offset" value="<%= offset %>">
     <%- include('parts/menu', {current_menu: 1}) %>
     <div class="container">
+        <div class="row">
+            <div class="col-4 col-sm-7"></div>
+            <div class="col-7 col-sm-4" style="padding: 0;">
+                <select id="sort-select" class="form-control selectpicker" onchange="reloadOpenQuestion()">
+                    <option value="timestamp_0" data-content="<i class='fas fa-sort-amount-down'></i> timestamp"></option>
+                    <option value="timestamp_1" data-content="<i class='fas fa-sort-amount-up'></i> timestamp"></option>
+                    <option value="reward_0" data-content="<i class='fas fa-sort-amount-down'></i> reward"></option>
+                    <option value="reward_1" data-content="<i class='fas fa-sort-amount-up'></i> reward"></option>
+                    <option value="num_0" data-content="<i class='fas fa-sort-amount-down'></i> num of people"></option>
+                    <option value="num_1" data-content="<i class='fas fa-sort-amount-up'></i> num of people"></option>
+                </select>   
+            </div>
+            <div class="col-1"></div>
+        </div>
         <div id="question-list"></div>
     </div>
 </body>
