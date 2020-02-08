@@ -29,7 +29,8 @@ module.exports.findQuestion = async (params, offset) => {
         }
 
         const query = `
-            SELECT trs51."id",
+            SELECT count(trs51."id") over() as max_count,
+                   trs51."id",
                    trs51."senderId",
                    trs51."timestamp",
                    (trs51."asset" -> 'quiz' ->> 'question') as question,
@@ -81,7 +82,8 @@ module.exports.findAnswer = async (params, offset) => {
         }
 
         const query = `
-            SELECT trs."id",
+            SELECT count(trs."id") over() as max_count,
+                   trs."id",
                    trs."senderId",
                    trs."timestamp",
                    trs."asset" ->> 'data' as questionId,
@@ -125,7 +127,8 @@ module.exports.findOpenCloseQuestion = async (isOpen, params) => {
         }
         client = await pool.connect();
         const query = `
-            SELECT trs51."id",
+            SELECT count(trs51."id") over() as max_count,
+                   trs51."id",
                    trs51."senderId",
                    trs51."timestamp",
                    (trs51."asset" -> 'quiz' ->> 'question') as question,
