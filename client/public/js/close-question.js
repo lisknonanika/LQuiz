@@ -71,7 +71,7 @@ const getCloseQuestion = async () => {
     document.querySelector("#question-list").innerHTML = html;
 }
 
-const reloadOpenQuestion = () => {
+const reloadCloseQuestion = () => {
     let param = "";
     const offset = document.querySelector("#offset").value;
     if (offset) param += `offset=${offset}`;
