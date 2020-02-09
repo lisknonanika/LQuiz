@@ -32,6 +32,27 @@ const doGet = (url, param) => {
     });
 }
 
+const getBalance = (val) => {
+    if (!val) return 0;
+    else return lisk.transaction.utils.convertBeddowsToLSK(val);
+}
+
+const getLocalDate = (val) => {
+    if (!val) return "";
+    else return new Date((val * 1000) + Date.parse(lisk.transaction.constants.EPOCH_TIME)).toLocaleString();
+}
+
+const getAccountBalance = async () => {
+    const ret = await doGet("./account");
+    if (!ret.success) return "0";
+    return getBalance(ret.response.balance);
+}
+
+const displayPassphrase = (elem) => {
+    const type = elem.checked? "text": "password";
+    for (i=1;i<=12;i++) document.querySelector(`#p${i}`).type = type;
+}
+
 const passphraseHtml = `
     <input type="password" id="p1" class="passphrase" placeholder="1" oninput="setPassphrase(1)">
     <input type="password" id="p2" class="passphrase" placeholder="2" oninput="setPassphrase(2)">
@@ -45,29 +66,22 @@ const passphraseHtml = `
     <input type="password" id="p10" class="passphrase" placeholder="10" oninput="setPassphrase(10)">
     <input type="password" id="p11" class="passphrase" placeholder="11" oninput="setPassphrase(11)">
     <input type="password" id="p12" class="passphrase" placeholder="12" oninput="setPassphrase(12)">
+    <div>
+        <input type="checkbox" id="dsp-passphrase" onchange="displayPassphrase(this);">
+        <label style="font-size:0.9rem;" for="dsp-passphrase">display passphrase</label>
+    </div>
 `;
 
 const getPassphraseValue = () => {
-    let passphrase =
-    document.querySelector("#p1").value.trim() + " " +
-    document.querySelector("#p2").value.trim() + " " +
-    document.querySelector("#p3").value.trim() + " " +
-    document.querySelector("#p4").value.trim() + " " +
-    document.querySelector("#p5").value.trim() + " " +
-    document.querySelector("#p6").value.trim() + " " +
-    document.querySelector("#p7").value.trim() + " " +
-    document.querySelector("#p8").value.trim() + " " +
-    document.querySelector("#p9").value.trim() + " " +
-    document.querySelector("#p10").value.trim() + " " +
-    document.querySelector("#p11").value.trim() + " " +
-    document.querySelector("#p12").value.trim();
-    return passphrase.trim();
+    let vals = [];
+    for (i=1;i<=12;i++) vals.push(document.querySelector(`#p${i}`).value.trim().toLowerCase());
+    return vals.join(" ");
 }
 
 const setPassphrase = (n) => {
     const elem = document.querySelector(`#p${n}`);
     const vals = elem.value.toLowerCase().split(" ");
-    const val = vals.shift().trim();
+    const val = vals.shift().trim().toLowerCase();
     elem.value = val;
     if (val.length == 0) elem.style="";
     else if (lisk.passphrase.Mnemonic.wordlists.EN.indexOf(val) >= 0) elem.style="color: #254898";
@@ -108,19 +122,34 @@ const login = (redirectUrl) => {
     })
 }
 
+const copyValue = (val) => {
+    const obj = document.querySelector("#copy-field");
+    obj.style = "";
+    obj.value = val;
+    obj.select();
+    document.execCommand("copy");
+    obj.style = "display:none";
+    alert("copy!")
+}
+
 const createAccount = () => {
     const passphrase = lisk.passphrase.Mnemonic.generateMnemonic();
     const address = lisk.cryptography.getAddressFromPassphrase(passphrase);
     Swal.fire({
         title: '',
         html: `
-            <h4>Address</h4>
-            <div style="background-color: #eee;padding:10px;border-radius:5px;">${address}</div>
+            <h4 onclick="copyValue('${address}')">Address</h4>
+            <div style="background-color:#eee;padding:10px;border-radius:5px;position:relative;" onclick="copyValue('${address}')">
+                ${address} <i class="far fa-copy" style="font-size:0.8rem;position:absolute;bottom:5px;right:0px;"></i>
+            </div>
             <br>
-            <h4>Passphrase</h4>
-            <div style="background-color: #eee;padding:10px;border-radius:5px;">${passphrase}</div>
+            <h4 onclick="copyValue('${passphrase}')">Passphrase</h4>
+            <div style="background-color:#eee;padding:10px;border-radius:5px;position:relative;" onclick="copyValue('${passphrase}')">
+                ${passphrase} <i class="far fa-copy" style="font-size:0.8rem;position:absolute;bottom:5px;right:0px;"></i>
+            </div>
             <div style="color: #FF4557;font-size:0.8rem;">passphrase cannot be restored. Never forget.</div>
             <div style="color: #FF4557;font-size:0.8rem;">You will receive 100 LSK for testing.</div>
+            <input type="text" id="copy-field" style="display:none;">
         `,
         showCancelButton: true,
         confirmButtonText: 'Login',
@@ -195,16 +224,6 @@ const getAnswerByCondition = async (params) => {
         if (arr.length > 0) param = arr.join("&");
     }
     return await doGet(`${API_URL}/answer`, param);
-}
-
-const getBalance = (val) => {
-    if (!val) return 0;
-    else return lisk.transaction.utils.convertBeddowsToLSK(val);
-}
-
-const getLocalDate = (val) => {
-    if (!val) return "";
-    else return new Date((val * 1000) + Date.parse(lisk.transaction.constants.EPOCH_TIME)).toLocaleString();
 }
 
 const confirmOutLink = (url) => {

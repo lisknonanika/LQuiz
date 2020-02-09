@@ -5,21 +5,30 @@
     <meta charset="utf-8">
     <title>LQuiz:My Question Page</title>
     <%- include('parts/head') %>
+    <link rel="stylesheet" href="../css/question.css">
+    <script src="../js/question.js"></script>
     <script>
-        const getMyQuestion = async (offset) => {
+        const getMyQuestion = () => {
             const senderId = document.querySelector("#address").value.toUpperCase();
-            const ret = await getQuestionByCondition({offset: offset, senderId: senderId});
-            document.querySelector("#question-list").innerHTML = JSON.stringify(ret.response);
+            const offset = document.querySelector("#offset").value;
+            let param = `senderId=${senderId}&offset=${offset}`;
+            getQuestion("question", param);
         }
     </script>
 </head>
-<body onload="getMyQuestion(0)">
+<body onload="getMyQuestion()">
     <form method="post" id="frm"></form>
+    <input type="hidden" id="offset" value="<%= offset %>">
     <%- include('parts/menu', {current_menu: 4}) %>
+    <div id="question-total-count" style="display: none;"></div>
+    <div id="question-page-count" style="display: none;"></div>
     <div class="container">
-        <div class="row">
-            <div class="col-12" id="question-list"></div>
+        <div class="row" style="height: 38px">
+            <div class="col-1"></div>
+            <div class="col-10" style="text-align: center;">- your question -</div>
+            <div class="col-1"></div>
         </div>
+        <div id="question-list"></div>
     </div>
 </body>
 </html>

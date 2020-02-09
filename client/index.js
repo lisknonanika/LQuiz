@@ -138,7 +138,11 @@ router.get("/my-question", (req, res) => {
             res.redirect('/');
             return;
         }
-        res.render("my-question", {address: req.session.address});
+        let params = {
+            address: req.session.address,
+            offset: req.query.offset? req.query.offset: 0
+        }
+        res.render("my-question", params);
     })().catch((err) => {
         // SYSTEM ERROR
         console.log(err);
@@ -160,7 +164,11 @@ router.get("/my-answered", (req, res) => {
             res.redirect('/');
             return;
         }
-        res.render("my-answered", {address: req.session.address});
+        let params = {
+            address: req.session.address,
+            offset: req.query.offset? req.query.offset: 0
+        }
+        res.render("my-answered", params);
     })().catch((err) => {
         // SYSTEM ERROR
         console.log(err);

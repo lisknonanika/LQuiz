@@ -29,26 +29,29 @@ const getQuestion = async (path, param) => {
         html += `    <div class="col-1"></div>`;
         html += `</div>`;
         document.querySelector("#question-list").innerHTML = html;
-        document.querySelector(".container .dropdown-toggle").style = "display:none"
+        const selectObj = document.querySelector(".container .dropdown-toggle");
+        if (selectObj) selectObj.style = "display:none";
         return;
     }
     for (i=0; i < ret.response.length; i++) {
         const data = ret.response[i];
+        const closeStyle = (data.answered >= data.num)? "close-question": "";
+        const closeBorderStyle = (data.answered >= data.num)? "close-question-border": "";
         html += `<div class="row">`;
         html += `    <div class="col-1"></div>`;
-        html += `    <div class="col-10 item">`;
+        html += `    <div class="col-10 item ${closeBorderStyle}">`;
         html += `        <div class="col-12 info"><i class="fas fa-lock-open"></i>QuestionID: ${data.id}</div>`;
-        html += `        <div class="col-12 label" style="margin-top: 0;">Question</div>`;
-        html += `        <div class="col-12 value-ellipsis" id="question${i}">${data.question}</div>`;
+        html += `        <div class="col-12 label ${closeStyle}" style="margin-top: 0;">Question</div>`;
+        html += `        <div class="col-12 value-ellipsis ${closeBorderStyle}" id="question${i}">${data.question}</div>`;
         html += `        <div class="hidden" id="detail${i}">`;
         if (data.url) {
-            html += `            <div class="col-12 label">URL <i class="fas fa-link"></i></div>`;
-            html += `            <div class="col-12 value-ellipsis" onclick="confirmOutLink('${data.url}');"><a href="javascript:void 0;">${data.url}</a></div>`;
+            html += `            <div class="col-12 label ${closeStyle}">URL <i class="fas fa-link"></i></div>`;
+            html += `            <div class="col-12 value-ellipsis ${closeBorderStyle}" onclick="confirmOutLink('${data.url}');"><a href="javascript:void 0;">${data.url}</a></div>`;
         }
-        html += `            <div class="col-12 label">Reward</div>`;
-        html += `            <div class="col-12 value">${getBalance(data.reward)}LSK</div>`;
-        html += `            <div class="col-12 label">Answered / Number <i class="fas fa-list-alt"></i></div>`;
-        html += `            <div class="col-12 value" onclick="answeredInfo('${data.id}')"><a href="javascript:void 0;">${data.answered} / ${data.num}</a></div>`;
+        html += `            <div class="col-12 label ${closeStyle}">Reward</div>`;
+        html += `            <div class="col-12 value ${closeBorderStyle}">${getBalance(data.reward)}LSK</div>`;
+        html += `            <div class="col-12 label ${closeStyle}">Answered / Number <i class="fas fa-list-alt"></i></div>`;
+        html += `            <div class="col-12 value ${closeBorderStyle}" onclick="answeredInfo('${data.id}')"><a href="javascript:void 0;">${data.answered} / ${data.num}</a></div>`;
         if (path == "open-question") {
             html += `            <div class="col-12 input-area">`;
             html += `                <div class="col-12 info"><input type="text" id="answer${i}" placeholder="Input Answer"></div>`;
@@ -69,8 +72,10 @@ const getQuestion = async (path, param) => {
     }
     const maxPage = ret.response.length > 0? Math.ceil(ret.response[0].max_count / 100): 1;
     const currentPage = isValidNumNoLimit(offset)? +offset + 1: 1;
-    document.querySelector("#question-count").innerHTML = `Page: ${currentPage} / ${maxPage}`;
-    document.querySelector("#question-count").style = `top: ${$('.navbar').height()+5}px`;
+    document.querySelector("#question-total-count").innerHTML = `Total: ${ret.response[0].max_count}`;
+    document.querySelector("#question-total-count").style = `top: ${$('.navbar').height()+5}px`;
+    document.querySelector("#question-page-count").innerHTML = `Page: ${currentPage} / ${maxPage}`;
+    document.querySelector("#question-page-count").style = `top: ${$('.navbar').height()+30}px`;
     if (maxPage > 1) {
         const prevPage = (+offset == 0)? 0: +offset - 1;
         const nextPage = (+currentPage == +maxPage)? +maxPage: +currentPage + 1;

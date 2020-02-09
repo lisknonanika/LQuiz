@@ -5,18 +5,19 @@
     <meta charset="utf-8">
     <title>LQuiz:Create Question Page</title>
     <%- include('parts/head') %>
+    <link rel="stylesheet" href="../css/create-question.css">
     <script src="../js/create-question.js"></script>
 </head>
 <body>
     <form method="post" id="frm"></form>
     <%- include('parts/menu', {current_menu: 3}) %>
     <div class="container">
-        <input type="text" name="question" id="question" class="input" placeholder="question" required>
-        <input type="text" name="answer" id="answer" class="input" placeholder="answer" required>
-        <input type="number" name="reward" id="reward" class="input" placeholder="reward" required>
-        <input type="number" name="num" id="num" class="input" placeholder="num" required>
-        <input type="text" name="url" id="url" class="input" placeholder="url">
-        <button type="button" id="btn-login" class="btn btn-primary" onclick="sendQuestion()">Send Question</button>
+        <textarea name="question" id="question" class="input" placeholder="QUESTION (MAX:256BYTE)" rows="3" required></textarea>
+        <input type="text" name="answer" id="answer" class="input" placeholder="ANSWER (MAX:256BYTE)" required>
+        <input type="number" name="reward" id="reward" class="input" placeholder="REWARD (MAX:100LSK)" required>
+        <input type="number" name="num" id="num" class="input" placeholder="NUMBER OF RECIPIENTS (MAX:100)" required>
+        <input type="text" name="url" id="url" class="input" placeholder="URL">
+        <button type="button" id="btn-login" class="btn" onclick="sendQuestion()"><i class="fas fa-share-square"></i>Send Question</button>
     </div>
 </body>
 </html>

@@ -4,7 +4,16 @@
     margin-bottom: 100px;
 }
 
-#question-count {
+.close-question {
+    background-color: rgb(185, 50, 50) !important;
+}
+
+.close-question-border {
+    border: 1px solid rgb(185, 50, 50) !important;
+}
+
+#question-total-count,
+#question-page-count {
     font-size: 0.5rem;
     background-color: rgba(0, 0, 0, 0.1);
     position: absolute;
