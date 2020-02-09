@@ -112,18 +112,18 @@ const page = (offset) => {
 const sendAnswer = (num) => {
     const answer = document.querySelector(`#answer${num}`).value.trim().toUpperCase();
     if (!answer) {
-        Swal.fire({text: "Answer is required", icon: 'error'});
+        Swal.fire({text: "Answer is required", allowOutsideClick: false, icon: 'error'});
         return;
     }
     const crypto = new jsSHA("SHA-256", "TEXT");
     crypto.update(answer)
     const hash = crypto.getHash("HEX");
     if (document.querySelector(`#answerHash${num}`).value != hash) {
-        Swal.fire({text: "Answer missmatch", icon: 'error'});
+        Swal.fire({text: "Answer missmatch", allowOutsideClick: false, icon: 'error'});
         return;
     }
     if (document.querySelector("#address").value.toUpperCase() == "GUEST") {
-        Swal.fire({text: "The answer is correct, but cannot be sent by the guest.", icon: 'warning'});
+        Swal.fire({text: "The answer is correct, but cannot be sent by the guest.", allowOutsideClick: false, icon: 'warning'});
         return
     }
 
@@ -160,6 +160,7 @@ const sendAnswer = (num) => {
                     <div>Success!</div>
                     <div class="cofirm-content">${result.value}</div>
                 `,
+                allowOutsideClick: false, 
                 icon: 'success'
             }).then((result) => {
                 location.reload();

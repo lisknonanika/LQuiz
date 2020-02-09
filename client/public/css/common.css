@@ -43,13 +43,20 @@ hr {
 }
 
 .cofirm-content {
-    font-size: 0.9rem;
+    font-size: 0.8rem;
     overflow-y: auto;
     max-height: 150px;
     margin: 5px;
     padding: 5px;
     background-color: #eee;
     border-radius: 5px;
+}
+
+#footer {
+    font-size: 0.65rem;
+    width: 100%;
+    background-color: rgb(217, 228, 247);
+    padding: 1px 3px;
 }
 
 /*

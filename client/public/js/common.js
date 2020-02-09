@@ -179,6 +179,7 @@ const answeredInfo = async (qid) => {
     } else if (ret.response.length == 0) {
         html += `<div class="alert alert-info">Data Not Found</div>`;
     } else {
+        html += `<div>Respondent</div>`;
         html += `<div class="cofirm-content">`;
         for (i=0; i < ret.response.length; i++) {
             const data = ret.response[i];
@@ -230,12 +231,12 @@ const confirmOutLink = (url) => {
     Swal.fire({
         title: "",
         html: `
-                <div>Make sure this URL is not dangerous.</div>
-                <div class="cofirm-content" style="color :#DD557B;">${url}</div>
-            `,
-        icon: 'warning',
+            <div>Make sure this URL is not dangerous.</div>
+            <div class="cofirm-content" style="color :#DD557B;">${url}</div>
+        `,
         showCancelButton: true,
-        confirmButtonText: 'Jump'
+        confirmButtonText: 'Jump',
+        icon: 'warning'
     }).then((result) => {
         if (result.value) window.open(url, "_blank");
     });

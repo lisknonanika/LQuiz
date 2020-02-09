@@ -1,0 +1,10 @@
+<div id="footer" class="fixed-bottom"></div>
+<input type="hidden" name="balance" id="balance">
+<script>
+    const init = async () => {
+        const balance = await getAccountBalance();
+        document.querySelector("#balance").value = balance;
+        document.querySelector("#footer").innerHTML = `Balance: ${balance} LSK`;
+    }
+    init();
+</script>
