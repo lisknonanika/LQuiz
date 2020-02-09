@@ -42,10 +42,28 @@ hr {
     margin: 5px !important;
 }
 
+.howto-content {
+    font-size: 0.8rem;
+    overflow-y: auto;
+    max-height: 250px;
+    margin: 5px;
+    padding: 5px;
+}
+
+.howto-content div {
+    text-align: left !important;
+}
+
+.howto-content .value {
+    background-color: #eee;
+    border-radius: 5px;
+    padding: 5px;
+}
+
 .cofirm-content {
     font-size: 0.8rem;
     overflow-y: auto;
-    max-height: 150px;
+    max-height: 200px;
     margin: 5px;
     padding: 5px;
     background-color: #eee;
