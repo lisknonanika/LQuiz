@@ -129,7 +129,7 @@ const copyValue = (val) => {
     obj.select();
     document.execCommand("copy");
     obj.style = "display:none";
-    alert("copy!")
+    alert("copied !")
 }
 
 const createAccount = () => {
