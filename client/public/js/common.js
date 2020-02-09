@@ -234,6 +234,7 @@ const confirmOutLink = (url) => {
             <div>Make sure this URL is not dangerous.</div>
             <div class="cofirm-content" style="color :#DD557B;">${url}</div>
         `,
+        allowOutsideClick: false, 
         showCancelButton: true,
         confirmButtonText: 'Jump',
         icon: 'warning'

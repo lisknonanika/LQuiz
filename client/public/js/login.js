@@ -50,5 +50,6 @@ const whatIsLQuiz = () => {
                 </div>
             </div>
         `,
+        allowOutsideClick: false
     });
 }
