@@ -11,7 +11,7 @@ const pool = new Pool({
 });
 
 module.exports.findQuestion = async (params, offset) => {
-    if (!params || (!params.id && !params.senderId)) return {success: false}
+    if (!params || (!params.id && !params.senderId && !params.answerId)) return {success: false}
     if (!offset) offset = 0;
 
     let client = undefined;
@@ -21,11 +21,22 @@ module.exports.findQuestion = async (params, offset) => {
         let where = "";
         let conditionValue = "";
         if (params.id) {
-            where = `trs51."id"`;
+            where = `trs51."id" = $1`;
             conditionValue = params.id;
         } else if (params.senderId) {
-            where = `trs51."senderId"`;
+            where = `trs51."senderId" = $1`;
             conditionValue = params.senderId;
+        } else if (params.answerId) {
+            console.log(params.answerId)
+            where = `EXISTS (
+                SELECT 1
+                  FROM trs as trs52
+                 WHERE trs52."type" = 52
+                   AND trs52."asset" ->> 'data' = trs51."id"
+                   AND trs52."senderId" = $1
+                 LIMIT 1
+            )`;
+            conditionValue = params.answerId;
         }
 
         const query = `
@@ -44,7 +55,7 @@ module.exports.findQuestion = async (params, offset) => {
                        AND trs52."asset" ->> 'data' = trs51."id")::INT as answered
               FROM trs as trs51
              WHERE trs51."type" = 51
-               AND ${where} = $1
+               AND ${where}
              ORDER BY timestamp DESC
              LIMIT 100 OFFSET ${offset*100}
         `;
@@ -71,13 +82,13 @@ module.exports.findAnswer = async (params, offset) => {
         let where = "";
         let conditionValue = "";
         if (params.id) {
-            where = `trs."id"`;
+            where = `trs."id" = $1`;
             conditionValue = params.id;
         } else if (params.senderId) {
-            where = `trs."senderId"`;
+            where = `trs."senderId" = $1`;
             conditionValue = params.senderId;
         } else if (params.questionId) {
-            where = `trs."asset" ->> 'data'`;
+            where = `trs."asset" ->> 'data' = $1`;
             conditionValue = params.questionId;
         }
 
@@ -90,7 +101,7 @@ module.exports.findAnswer = async (params, offset) => {
                    trs."asset" -> 'quiz' ->> 'reward' as reward
               FROM trs
              WHERE trs."type" = 52
-               AND ${where} = $1
+               AND ${where}
              ORDER BY timestamp DESC
              LIMIT 100 OFFSET ${offset*100}
         `;

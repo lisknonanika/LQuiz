@@ -6,12 +6,23 @@
     <title>LQuiz:Open Question Page</title>
     <%- include('parts/head') %>
     <link rel="stylesheet" href="../css/question.css">
-    <script src="../js/close-question.js"></script>
+    <script src="../js/question.js"></script>
     <script>
         $(function () {
             $('#sort-select').val("<%= sort %>");
             $('#sort-select').selectpicker();
         });
+        const getCloseQuestion = () => {
+            const userId = document.querySelector("#address").value.toUpperCase();
+            const offset = document.querySelector("#offset").value;
+            const sort = document.querySelector("#sort-select").value;
+            let param = `userId=${userId}&offset=${offset}`;
+            if (sort) {
+                const vals = sort.split('_');
+                if (vals.length = 2) param += `&sortKey=${vals[0]}&sortType=${vals[1]}`;
+            }
+            getQuestion("close-question", param);
+        }
     </script>
 </head>
 <body onload="getCloseQuestion()">
@@ -23,7 +34,7 @@
         <div class="row">
             <div class="col-6 col-sm-8"></div>
             <div class="col-5 col-sm-3" style="padding: 0;">
-                <select id="sort-select" class="form-control selectpicker" onchange="reloadCloseQuestion()">
+                <select id="sort-select" class="form-control selectpicker" onchange="reloadQuestion()">
                     <option value="timestamp_0" data-content="<i class='fas fa-sort-amount-down'></i> timestamp"></option>
                     <option value="timestamp_1" data-content="<i class='fas fa-sort-amount-up'></i> timestamp"></option>
                     <option value="reward_0" data-content="<i class='fas fa-sort-amount-down'></i> reward"></option>

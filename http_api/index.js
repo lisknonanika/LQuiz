@@ -139,18 +139,20 @@ router.get("/question", (req, res) => {
         let offset = 0;
         let params = {
             id: "",
-            senderId: ""
+            senderId: "",
+            answerId: ""
         }
 
         // Check Params
-        if (!req.query.id && !req.query.senderId) {
-            res.json({success: false, messages: "Parameter 'id' or 'senderId' is required"});
+        if (!req.query.id && !req.query.senderId && !req.query.answerId) {
+            res.json({success: false, messages: "Parameter 'id' or 'senderId' or 'answerId' is required"});
             return;
         }
         
         // Set Params
-        if (req.query.id) params.id = req.query.id;
-        if (req.query.senderId) params.senderId = req.query.senderId;
+        if (req.query.id) params.id = req.query.id.trim();
+        if (req.query.senderId) params.senderId = req.query.senderId.trim().toUpperCase();
+        if (req.query.answerId) params.answerId = req.query.answerId.trim().toUpperCase();
         if (req.query.offset && checkUtil.checkNumber(req.query.offset)) offset = +req.query.offset;
         
         // GET
@@ -188,9 +190,9 @@ router.get("/answer", (req, res) => {
         }
         
         // Set Params
-        if (req.query.id) params.id = req.query.id;
-        if (req.query.senderId) params.senderId = req.query.senderId;
-        if (req.query.qid) params.questionId = req.query.qid;
+        if (req.query.id) params.id = req.query.id.trim();
+        if (req.query.senderId) params.senderId = req.query.senderId.trim().toUpperCase();
+        if (req.query.qid) params.questionId = req.query.qid.trim();
         if (req.query.offset && checkUtil.checkNumber(req.query.offset)) offset = +req.query.offset;
 
         // GET
@@ -222,9 +224,9 @@ router.get("/open-question", (req, res) => {
         }
         
         // Set Params
-        if (req.query.userId) params.senderId = req.query.userId;
+        if (req.query.userId) params.senderId = req.query.userId.trim().toUpperCase();
         if (req.query.offset && checkUtil.checkNumber(req.query.offset)) params.offset = +req.query.offset;
-        if (req.query.sortKey) params.sortKey = req.query.sortKey;
+        if (req.query.sortKey) params.sortKey = req.query.sortKey.trim().toUpperCase();
         if (req.query.sortType && req.query.sortType != "0") params.sortType = 1;
         
         // GET
@@ -256,9 +258,9 @@ router.get("/close-question", (req, res) => {
         }
         
         // Set Params
-        if (req.query.userId) params.senderId = req.query.userId;
+        if (req.query.userId) params.senderId = req.query.userId.trim().toUpperCase();
         if (req.query.offset && checkUtil.checkNumber(req.query.offset)) params.offset = +req.query.offset;
-        if (req.query.sortKey) params.sortKey = req.query.sortKey;
+        if (req.query.sortKey) params.sortKey = req.query.sortKey.trim().toUpperCase();
         if (req.query.sortType && req.query.sortType != "0") params.sortType = 1;
         
         // GET

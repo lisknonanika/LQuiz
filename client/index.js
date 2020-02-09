@@ -150,9 +150,9 @@ router.get("/my-question", (req, res) => {
 });
 
 /**
- * GET: my-answer
+ * GET: my-answered
  */
-router.get("/my-answer", (req, res) => {
+router.get("/my-answered", (req, res) => {
     (async () => {
         req.session.message = null;
         if (!req.session.address) {
@@ -160,7 +160,7 @@ router.get("/my-answer", (req, res) => {
             res.redirect('/');
             return;
         }
-        res.render("my-answer", {address: req.session.address});
+        res.render("my-answered", {address: req.session.address});
     })().catch((err) => {
         // SYSTEM ERROR
         console.log(err);
