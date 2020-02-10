@@ -11,7 +11,7 @@
 }
 
 .label {
-    background-color: #254898;
+    background-color: #1d866c;
     border-radius: 5px 5px 0 0;
     padding: 7px 5px;
     margin-top: 10px;
@@ -21,9 +21,8 @@
 }
 
 .value {
-    border: 1px solid #254898;
+    border: 1px solid #1d866c;
     padding: 1px 5px;
-    font-size: 0.8rem;
 }
 
 #answer {

@@ -12,13 +12,21 @@
     border: 1px solid rgb(185, 50, 50) !important;
 }
 
-#question-total-count,
-#question-page-count {
+#question-total-count {
     font-size: 0.5rem;
     background-color: rgba(0, 0, 0, 0.1);
     position: absolute;
     left: 5px;
     padding: 3px;
+}
+
+#question-page-count {
+    font-size: 0.65rem;
+    position: fixed;
+    bottom: 0px;
+    right: 0px;
+    padding: 1px 3px;
+    z-index: 1050;
 }
 
 #question-page {
@@ -132,5 +140,28 @@
 }
 
 .container .dropdown-toggle {
-    font-size: 0.8rem;
+    font-size: 0.65rem;
+    border-color: #ccc !important;
+    border: solid 1px;
+    border-radius: 5px;
+}
+
+.bootstrap-select {
+    width: 135px !important;
+}
+
+.filter {
+    font-size: 0.5rem;
+    color: #314372 !important;
+    font-weight: bold;
+    border-color: #ccc !important;
+    border: solid 1px;
+    border-radius: 5px;
+    padding: 6px 12px;
+    width: 70px;
+    margin-left: 5px;
+}
+
+#filter-text {
+    text-transform: uppercase;
 }

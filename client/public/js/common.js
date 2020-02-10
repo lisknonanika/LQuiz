@@ -54,6 +54,7 @@ const displayPassphrase = (elem) => {
 }
 
 const passphraseHtml = `
+    <h4>Input your passphrase</h4>
     <input type="password" id="p1" class="passphrase" placeholder="1" oninput="setPassphrase(1)">
     <input type="password" id="p2" class="passphrase" placeholder="2" oninput="setPassphrase(2)">
     <input type="password" id="p3" class="passphrase" placeholder="3" oninput="setPassphrase(3)">
@@ -94,7 +95,6 @@ const setPassphrase = (n) => {
 
 const login = (redirectUrl) => {
     Swal.fire({
-        title: 'Input your passphrase',
         html: passphraseHtml,
         showCancelButton: true,
         confirmButtonText: 'Login',

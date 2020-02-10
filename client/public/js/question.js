@@ -75,7 +75,7 @@ const getQuestion = async (path, param) => {
     document.querySelector("#question-total-count").innerHTML = `Total: ${ret.response[0].max_count}`;
     document.querySelector("#question-total-count").style = `top: ${$('.navbar').height()+5}px`;
     document.querySelector("#question-page-count").innerHTML = `Page: ${currentPage} / ${maxPage}`;
-    document.querySelector("#question-page-count").style = `top: ${$('.navbar').height()+30}px`;
+    document.querySelector("#question-page-count").style = "";
     if (maxPage > 1) {
         const prevPage = (+offset == 0)? 0: +offset - 1;
         const nextPage = (+currentPage == +maxPage)? +maxPage: +currentPage + 1;
@@ -97,16 +97,17 @@ const reloadQuestion = () => {
     const offset = document.querySelector("#offset").value;
     if (offset) param += `offset=${offset}`;
 
+    const filterElem = document.querySelector("#filter");
+    if (filterElem && filterElem.value) param += `&filter=${filterElem.value}`;
+
     const sortElem = document.querySelector("#sort-select");
     if (sortElem && sortElem.value) param += `&sort=${sortElem.value}`;
     location.href = `${location.pathname}?${param}`;
 }
 
 const page = (offset) => {
-    let param = `offset=${offset}`;
-    const sortElem = document.querySelector("#sort-select");
-    if (sortElem && sortElem.value) param += `&sort=${sortElem.value}`;
-    location.href = `${location.pathname}?${param}`;
+    document.querySelector("#offset").value = offset;
+    reloadQuestion();
 }
 
 const sendAnswer = (num) => {
@@ -165,6 +166,28 @@ const sendAnswer = (num) => {
             }).then((result) => {
                 location.reload();
             });
+        }
+    })
+}
+
+const filter = () => {
+    const filter = document.querySelector("#filter").value;
+    Swal.fire({
+        html: `
+            <h4>Input Filter</h4>
+            <input type="text" id="filter-text" placeholder="QuestionID or Questioner" value="${filter}">
+        `,
+        showCancelButton: true,
+        confirmButtonText: 'Search',
+        showLoaderOnConfirm: true,
+        allowOutsideClick: false,
+        preConfirm: () => {
+            return document.querySelector("#filter-text").value.trim().toUpperCase();
+        }
+    }).then((result) => {
+        if (result.value !== undefined) {
+            document.querySelector("#filter").value = result.value;
+            reloadQuestion();
         }
     })
 }

@@ -12,6 +12,7 @@ input[type="text"],
 input[type="password"],
 input[type="number"],
 textarea {
+    font-size: 1rem;
     border: 0;
     border-bottom: 2px solid #eee;
     width: 100%;

@@ -218,6 +218,7 @@ router.get("/open-question", (req, res) => {
     (async () => {
         let params = {
             senderId: "0L",
+            filter: "",
             offset: 0,
             sortKey: "timestamp",
             sortType: 0,
@@ -225,12 +226,13 @@ router.get("/open-question", (req, res) => {
         
         // Set Params
         if (req.query.userId) params.senderId = req.query.userId.trim().toUpperCase();
+        if (req.query.filter) params.filter = req.query.filter.trim().toUpperCase();
         if (req.query.offset && checkUtil.checkNumber(req.query.offset)) params.offset = +req.query.offset;
         if (req.query.sortKey) params.sortKey = req.query.sortKey.trim().toUpperCase();
         if (req.query.sortType && req.query.sortType != "0") params.sortType = 1;
         
         // GET
-        const trx = await db.findOpenCloseQuestion(true, params)
+        const trx = await db.findOpenCloseQuestion(true, params);
         if (!trx.success) {
             res.json({success: false, messages: "Failed to get question data"});
             return;
@@ -252,6 +254,7 @@ router.get("/close-question", (req, res) => {
     (async () => {
         let params = {
             senderId: "0L",
+            filter: "",
             offset: 0,
             sortKey: "timestamp",
             sortType: 0,
@@ -259,12 +262,13 @@ router.get("/close-question", (req, res) => {
         
         // Set Params
         if (req.query.userId) params.senderId = req.query.userId.trim().toUpperCase();
+        if (req.query.filter) params.filter = req.query.filter.trim().toUpperCase();
         if (req.query.offset && checkUtil.checkNumber(req.query.offset)) params.offset = +req.query.offset;
         if (req.query.sortKey) params.sortKey = req.query.sortKey.trim().toUpperCase();
         if (req.query.sortType && req.query.sortType != "0") params.sortType = 1;
         
         // GET
-        const trx = await db.findOpenCloseQuestion(false, params)
+        const trx = await db.findOpenCloseQuestion(false, params);
         if (!trx.success) {
             res.json({success: false, messages: "Failed to get question data"});
             return;

@@ -64,6 +64,7 @@ router.get("/open-question", (req, res) => {
         }
         let params = {
             address: req.session.address,
+            filter: req.query.filter? req.query.filter: "",
             offset: req.query.offset? req.query.offset: 0,
             sort: req.query.sort? req.query.sort: "timestamp_0"
         }
@@ -91,6 +92,7 @@ router.get("/close-question", (req, res) => {
         }
         let params = {
             address: req.session.address,
+            filter: req.query.filter? req.query.filter: "",
             offset: req.query.offset? req.query.offset: 0,
             sort: req.query.sort? req.query.sort: "timestamp_0"
         }

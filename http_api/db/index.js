@@ -136,6 +136,15 @@ module.exports.findOpenCloseQuestion = async (isOpen, params) => {
         } else if (params.sortKey.toUpperCase() == "REWARD") {
             sortKey = `trs51."asset" -> 'quiz' ->> 'reward' ${sortType}, timestamp DESC`;
         }
+
+        // set filter
+        let filterValue = "";
+        let filter = "";
+        if (params.filter) {
+            filterValue = params.filter.toUpperCase();
+            filter = `AND (trs51."id" = $2 OR trs51."senderId" = $2)`;
+        }
+
         client = await pool.connect();
         const query = `
             SELECT count(trs51."id") over() as max_count,
@@ -166,14 +175,15 @@ module.exports.findOpenCloseQuestion = async (isOpen, params) => {
                              FROM trs as trs52
                             WHERE trs52."type" = 52
                               AND trs52."asset" ->> 'data' = trs51."id"
-                              AND trs52."senderId" = $2
+                              AND trs52."senderId" = $1
                             LIMIT 1
                        )
                    )
+                ${filter}
             ORDER BY ${sortKey}
             LIMIT 100 OFFSET ${offset*100}
         `;
-        const result = await client.query(query, [senderId, senderId]);
+        const result = await client.query(query, filter? [senderId, filterValue]: [senderId]);
         return {success: true, data: result.rows}
 
     } catch(err) {
