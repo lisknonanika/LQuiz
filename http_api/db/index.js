@@ -27,7 +27,6 @@ module.exports.findQuestion = async (params, offset) => {
             where = `trs51."senderId" = $1`;
             conditionValue = params.senderId;
         } else if (params.answerId) {
-            console.log(params.answerId)
             where = `EXISTS (
                 SELECT 1
                   FROM trs as trs52
