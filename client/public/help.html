@@ -8,7 +8,9 @@
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.1/css/all.css">
     <link rel="stylesheet" href="../css/bootstrap/bootstrap.min.css">
     <link rel="stylesheet" href="../css/common.css">
+    <link rel="stylesheet" href="../css/help.css">
     <script src="../js/bootstrap/jquery-3.4.1.min.js"></script>
+    <script src="../js/bootstrap/bootstrap.bundle.min.js"></script>
     <script src="../js/i18n/i18next.min.js"></script>
     <script src="../js/i18n/jquery-i18next.min.js"></script>
     <script src="../js/i18n/i18next-xhr-backend.min.js"></script>
@@ -29,8 +31,130 @@
     </script>
 </head>
 <body>
+    <nav class="navbar navbar-expand-lg navbar-light">
+        <div class="navbar-brand title">LQuiz Help</div>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNavDropdown">
+            <ul class="navbar-nav mr-auto">
+                <li id="menu1" class="nav-item">
+                    <a class="nav-link" href="./help.html#WhatIsLQuiz"><i class="fas fa-question-circle"></i>What's LQuiz</a>
+                </li>
+                <li id="menu2" class="nav-item">
+                    <a class="nav-link" href="./help.html#NextLQuiz"><i class="fas fa-arrow-alt-circle-right"></i>Next LQuiz</a>
+                </li>
+                <li id="menu3" class="nav-item">
+                    <a class="nav-link" href="./help.html#HowTo"><i class="fas fa-book"></i>How To</a>
+                </li>
+                <li id="menu3" class="nav-item">
+                    <a class="nav-link" href="./help.html#Contact"><i class="fas fa-paper-plane"></i>Contact</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+    
     <div class="container">
-        <div class="row">
+        <div class="label" id="WhatIsLQuiz">What's LQuiz</div>
+        <div class="value">
+            LQuiz is a PoC built with <a href="https://github.com/LiskHQ/lisk-sdk" target="_blank">LiskSDK</a>.
+            <br>
+            Account initialization plays an important role in Lisk.
+            <br>
+            However, I must create a transfer transaction to initialize it.
+            <br>
+            Buy LSK, transfer LSK to my account, and transfer LSK again to initialize.　(To be honest, this is troublesome lol)
+            <br>
+            When the conditions were met, I wanted to initialize my account and get an LSK.
+            <br><br>
+            So I thought this LQuiz.
+            <br><br>
+            The condition for initializing an account and obtaining an LSK is to answer the quiz correctly.
+            <br>
+            There is no fee for answer.
+            <br>
+            <br>
+            <a href="https://github.com/lisknonanika/LQuiz" target="_blank">LQuiz source: github</a>
+        </div>
+        <div class="label" id="NextLQuiz">Next LQuiz</div>
+        <div class="value">
+            I think that LQuiz can be used for job requests by extending it a little more.
+            <br>
+            After confirming the completion of the work, you can give a pre-prepared reward by giving the "answer".
+            <br>
+            The fact that the reward is pre-prepared will give the work contractor peace of mind.
+            <br><br>
+            However, it is possible to enter the answer before the contractor, which could lead to fraud.
+            <br>
+            Therefore, there is a need for a system that incorporates some evaluation method and gives punishment.
+        </div>
+        <div class="label" id="HowTo">How To</div>
+        <div class="value">
+            <div style="font-weight:bold;font-size: 0.8rem;">- Login Page -</div>
+            <ul>
+                <li>Login Button: Enter your passphrase and login</li>
+                <li>Guest Login Button: Login without entering a passphrase (cannot create or answer questions.)</li>
+                <li>Create Account: Create an account that can be used with Lisk and LQuiz.</li>
+            </ul>
+            <br>
+            <div style="font-weight:bold;font-size: 0.8rem;">- Open Question Page -</div>
+            <ul>
+                <li>Displays a list of currently available questions. (Questions registered by the login user is not displayed.)</li>
+            </ul>
+            <br>
+            <div style="font-weight:bold;font-size: 0.8rem;">- Close Question Page -</div>
+            <ul>
+                <li>Displays a list of questions that have reached the number of reward recipients. (Questions answered by the login user is not displayed.)</li>
+            </ul>
+            <br>
+            <div style="font-weight:bold;font-size: 0.8rem;">- Create Question Page -</div>
+            <ul>
+                <li>Create a new question. (Registration requires (reward * number of people receiving the reward) + fee.)</li>
+            </ul>
+            <br>
+            <div style="font-weight:bold;font-size: 0.8rem;">- My Question Page -</div>
+            <ul>
+                <li>Questions registered by the login user is displayed.</li>
+            </ul>
+            <br>
+            <div style="font-weight:bold;font-size: 0.8rem;">- My Answered Page -</div>
+            <ul>
+                <li>Questions Answerd by the login user is displayed.</li>
+            </ul>
+            <br>
+            <div style="font-weight:bold;font-size: 0.8rem;">- Change Account -</div>
+            <ul>
+                <li>Switch login user.</li>
+            </ul>
+            <br>
+            <div style="font-weight:bold;font-size: 0.8rem;">- Logout -</div>
+            <ul>
+                <li>Logout of Quiz.</li>
+            </ul>
+        </div>
+        <div class="label" id="Contact">Contact</div>
+        <div class="value">
+            <div style="font-weight:bold;font-size: 0.8rem;">- Developer -</div>
+            <ul>
+                <li>Discord: mdmg</li>
+                <li>Twitter: <a href="https://twitter.com/ys_mdmg" target="_blank">ys_mdmg</a></li>
+                <li>Lisk: <a href="https://explorer.lisk.io/address/5380827711560203827L" target="_blank">mdmg(5380827711560203827L)</a></li>
+            </ul>
+            <br>
+            <div style="font-weight:bold;font-size: 0.8rem;">- Other Product -</div>
+            <ul>
+                <li>LiskVote:
+                    <a href="https://apps.apple.com/jp/app/liskvote/id1480015547" target="_blank">iOS</a>,&nbsp;
+                    <a href="https://play.google.com/store/apps/developer?id=ysdev" target="_blank">Android</a>,&nbsp;
+                    <a href="https://github.com/lisknonanika/lisk_vote_app" target="_blank">github</a>
+                </li>
+                <li>lisk-sdk-installer:
+                    <a href="https://github.com/lisknonanika/lisk-sdk-installer" target="_blank">github</a>
+                </li>
+                <li>tiplsk:
+                    <a href="https://github.com/lisknonanika/tiplsk" target="_blank">github</a>
+                </li>
+            </ul>
         </div>
     </div>
 </body>
