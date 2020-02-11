@@ -64,7 +64,7 @@ const sendQuestion = async () => {
                     const passphrase = getPassphraseValue();
                     if (!passphrase) {
                         Swal.showValidationMessage("Passphrase is required");
-                    } else if (!lisk.passphrase.Mnemonic.validateMnemonic(passphrase)) {
+                    } else if (lisk.cryptography.getAddressFromPassphrase(passphrase) != address) {
                         Swal.showValidationMessage("Incorrect passphrase");
                     } else {
                         const json = {

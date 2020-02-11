@@ -76,7 +76,7 @@ const passphraseHtml = `
 const getPassphraseValue = () => {
     let vals = [];
     for (i=1;i<=12;i++) vals.push(document.querySelector(`#p${i}`).value.trim().toLowerCase());
-    return vals.join(" ");
+    return vals.join(" ").trim();
 }
 
 const setPassphrase = (n) => {
@@ -101,7 +101,7 @@ const login = (redirectUrl) => {
         showLoaderOnConfirm: true,
         allowOutsideClick: false,
         preConfirm: () => {
-            const passphrase = getPassphraseValue();    
+            const passphrase = getPassphraseValue();
             if (!passphrase) {
                 Swal.showValidationMessage("Passphrase is required");
             } else if (!lisk.passphrase.Mnemonic.validateMnemonic(passphrase)) {

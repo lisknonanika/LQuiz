@@ -5,6 +5,27 @@
 <!-- lisk -->
 <script src="https://js.lisk.io/lisk-client-2.1.1.min.js"></script>
 
+<!-- i18n -->
+<script src="../js/i18n/i18next.min.js"></script>
+<script src="../js/i18n/jquery-i18next.min.js"></script>
+<script src="../js/i18n/i18next-xhr-backend.min.js"></script>
+<script>
+    const localize = () => {
+        let lang = navigator.languages? navigator.languages[0]: (navigator.language || navigator.userLanguage);
+        lang = lang.split("-")[0].toLowerCase() === "ja"? "ja": "en";
+        i18next.use(i18nextXHRBackend).init({
+            backend: { loadPath: 'language/{{lng}}/string.json' },
+            debug: false,
+            fallbackLng : 'en',
+            lng: lang,
+        }, function (err, t) {
+            jqueryI18next.init(i18next, $);
+            $('[data-i18n]').localize();
+        });
+    }
+    localize();
+</script>
+
 <!-- bootstrap -->
 <link rel="stylesheet" href="../css/bootstrap/bootstrap.min.css">
 <link rel="stylesheet" href="../css/bootstrap/bootstrap-select.min.css">
