@@ -95,10 +95,6 @@
 				"force": true,
 				"delegates": [
 					{
-						"encryptedPassphrase": "iterations=1000000&cipherText=83c83a7ee2004f5499af8b63aa9967844a03efde185e1c4d8e46e0028b9c3343429a109b0fc6ada9062085b5e12aa11270066390375d2853f0d63a9dc2360c1d21c8a19aae&iv=550a67386dbfc95c69a27419&salt=3edc3579d3c2258efaf0dfb589b52e4d&tag=798bce500ac67cefdd871e58e2d69ecd&version=1",
-						"publicKey": "ede88c6cd39c57dad2a7d8f1efa7af090f735b4d0ab765b4b250b44663036ee5"
-					},
-					{
 						"encryptedPassphrase": "iterations=1&salt=476d4299531718af8c88156aab0bb7d6&cipherText=663dde611776d87029ec188dc616d96d813ecabcef62ed0ad05ffe30528f5462c8d499db943ba2ded55c3b7c506815d8db1c2d4c35121e1d27e740dc41f6c405ce8ab8e3120b23f546d8b35823a30639&iv=1a83940b72adc57ec060a648&tag=b5b1e6c6e225c428a4473735bc8f1fc9&version=1",
 						"publicKey": "9d3058175acab969f41ad9b86f7a2926c74258670fe56b37c429c01fca9f2f0f"
 					},
