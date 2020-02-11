@@ -4,7 +4,8 @@ const express = require("express");
 const session = require("express-session");
 const bodyParser = require("body-parser");
 const helmet = require("helmet");
-const { request } = require("../utility")
+const config = require("../config");
+const { request } = require("../utility");
 
 const app = express();
 app.set("view engine", "ejs");
@@ -20,7 +21,7 @@ app.use(session({
     cookie: {
         secure: false,
         httpOnly: true,
-        domain: '127.0.0.1'
+        domain: config.client.domain
     }
 }));
 
@@ -262,7 +263,7 @@ router.get("/account", (req, res) => {
 
         const acounts = await request({
             method: "GET",
-            url: `http://127.0.0.1:4000/api/accounts?address=${req.session.address}`,
+            url: `${config.liskapiurl}/api/accounts?address=${req.session.address}`,
             json: true
         });
         if (!acounts.data || acounts.data.length === 0) res.json({success: true, response: {}});
@@ -280,5 +281,5 @@ app.use((req, res, next) => {
     res.render("404");
 });
 
-app.listen(3102);
+app.listen(config.client.port);
 console.log(`Client Start`);

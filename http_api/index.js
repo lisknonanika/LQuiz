@@ -1,6 +1,7 @@
 const express = require("express");
 const bodyParser = require("body-parser");
 const helmet = require("helmet");
+const config = require("../config");
 const { request, checkUtil } = require("../utility");
 
 const db = require("./db")
@@ -52,7 +53,7 @@ router.post("/question", (req, res) => {
         // POST
         const data = await request({
             method: "POST",
-            url: "http://127.0.0.1:4000/api/transactions",
+            url: `${config.liskapiurl}/api/transactions`,
             headers: {"content-type": "application/json"},
             body: tx,
             json: true
@@ -84,7 +85,7 @@ router.post("/answer", (req, res) => {
         // POST
         const data = await request({
             method: "POST",
-            url: "http://127.0.0.1:4000/api/transactions",
+            url: `${config.liskapiurl}/api/transactions`,
             headers: {"content-type": "application/json"},
             body: tx,
             json: true
@@ -116,7 +117,7 @@ router.post("/faucet", (req, res) => {
         // POST
         const data = await request({
             method: "POST",
-            url: "http://127.0.0.1:4000/api/transactions",
+            url: `${config.liskapiurl}/api/transactions`,
             headers: {"content-type": "application/json"},
             body: tx,
             json: true
@@ -282,5 +283,5 @@ router.get("/close-question", (req, res) => {
     });
 });
 
-app.listen(3101);
+app.listen(config.api.port);
 console.log("http_api start");

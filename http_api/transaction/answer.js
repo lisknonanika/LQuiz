@@ -1,5 +1,6 @@
 const cryptography = require("@liskhq/lisk-cryptography");
 const crypto = require("crypto");
+const config = require("../../config");
 const myUtils = require("../../utility");
 const { checkUtil, request } = require("../../utility");
 const db = require("../db")
@@ -58,7 +59,7 @@ module.exports.validator = async(req) => {
     try {
         questionTransactions = await request({
             method: "GET",
-            url: `http://127.0.0.1:4000/api/transactions?id=${req.body.id}&type=51`,
+            url: `${config.liskapiurl}/api/transactions?id=${req.body.id}&type=51`,
             json: true
         });
         if (!questionTransactions.data || questionTransactions.data.length === 0) {
@@ -109,7 +110,7 @@ module.exports.validator = async(req) => {
     // ----------------------------
     const acounts = await request({
         method: "GET",
-        url: `http://127.0.0.1:4000/api/accounts?address=${address}`,
+        url: `${config.liskapiurl}/api/accounts?address=${address}`,
         json: true
     });
     if (!acounts.data || acounts.data.length === 0) {

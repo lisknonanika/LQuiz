@@ -1,4 +1,5 @@
 const cryptography = require("@liskhq/lisk-cryptography");
+const config = require("../../config");
 const myUtils = require("../../utility");
 const request = require("../../utility/request");
 const FaucetTransaction = require("../../transaction/99_faucet_transaction");
@@ -29,7 +30,7 @@ module.exports.validator = async(req) => {
     // ----------------------------
     const acounts = await request({
         method: "GET",
-        url: `http://127.0.0.1:4000/api/accounts?address=${req.body.address}`,
+        url: `${config.liskapiurl}/api/accounts?address=${req.body.address}`,
         json: true
     });
 
