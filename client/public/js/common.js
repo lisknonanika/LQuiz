@@ -179,8 +179,8 @@ const openMoreAnswer = (elem) => {
 
 const answeredInfo = async (qid) => {
     let html = "";
+    let isMore = false;
     const ret = await getAnswerByCondition({qid: qid});
-    const isMore = false;
     if (!ret.success) {
         html += `<div class="alert alert-danger">Failed to get answered data</div>`;
     } else if (ret.response.length == 0) {
