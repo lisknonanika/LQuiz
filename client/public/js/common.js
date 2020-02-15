@@ -1,4 +1,5 @@
 const API_URL = "http://127.0.0.1:3101/api";
+const EXPLORER_URL = "";
 
 const doPost = (url, param) => {
     const fetchParam = {
@@ -171,6 +172,11 @@ const createAccount = () => {
     })
 }
 
+const openMoreAnswer = (elem) => {
+    document.querySelector("#more-answer").style = "";
+    elem.style ="display:none";
+}
+
 const answeredInfo = async (qid) => {
     let html = "";
     const ret = await getAnswerByCondition({qid: qid});
@@ -183,8 +189,15 @@ const answeredInfo = async (qid) => {
         html += `<div class="cofirm-content">`;
         for (i=0; i < ret.response.length; i++) {
             const data = ret.response[i];
-            if (i < ret.response.length - 1) html += `<div>${data.senderId}&nbsp;(${getLocalDate(data.timestamp)})</div><hr>`;
-            else html += `<div>${data.senderId}&nbsp;(${getLocalDate(data.timestamp)})</div>`;
+            if (i >= 5) html+= '<div id="more-answer" style="display:none;">';
+
+            html += `<a href="${EXPLORER_URL}/tx/${data.id}" target="_blank">${data.senderId} <i class="fas fa-external-link-alt"></i></a>`;
+            if (i < ret.response.length - 1) html += `<hr>`;
+
+            if (i >= 5) {
+                html+= '</div>';
+                html+= '<a href="javascript:void 0;" class="btn btn-link" style="display:block;padding:0;font-size:0.8rem;" onclick="openMoreAnswer(this)">more..</a>';
+            }
         }
         html += `</div>`;
     }
@@ -192,8 +205,7 @@ const answeredInfo = async (qid) => {
     Swal.fire({
         title: '',
         html: html,
-        confirmButtonText: 'OK',
-        allowOutsideClick: false
+        confirmButtonText: 'OK'
     });
 }
 

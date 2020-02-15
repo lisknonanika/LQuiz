@@ -40,7 +40,7 @@ const getQuestion = async (path, param) => {
         html += `<div class="row">`;
         html += `    <div class="col-1"></div>`;
         html += `    <div class="col-10 item ${closeBorderStyle}">`;
-        html += `        <div class="col-12 info"><i class="fas fa-lock-open"></i>QuestionID: ${data.id}</div>`;
+        html += `        <div class="col-12 info"><i class="fas fa-lock-open"></i>QuestionID: <a href="${EXPLORER_URL}/tx/${data.id}" target="_blank" style="display:inline-block;">${data.id} <i class="fas fa-external-link-alt"></i></a></div>`;
         html += `        <div class="col-12 label ${closeStyle}" style="margin-top: 0;">Question</div>`;
         html += `        <div class="col-12 value-ellipsis ${closeBorderStyle}" id="question${i}">${data.question}</div>`;
         html += `        <div class="hidden" id="detail${i}">`;
@@ -62,7 +62,7 @@ const getQuestion = async (path, param) => {
         html += `        <div class="col-12 button">`;
         html += `            <button type="button" id="openclose${i}" class="btn btn-sm" onclick="openclose(${i})"><i class="fas fa-angle-down"></i>Open</button>`;
         html += `        </div>`;
-        html += `        <div class="col-12 info-right" style="padding-bottom: 5px;">Questioner: ${data.senderId}</div>`;
+        html += `        <div class="col-12 info-right" style="padding-bottom: 5px;">Questioner: <a href="${EXPLORER_URL}/address/${data.senderId}" target="_blank" style="display:inline-block;">${data.senderId} <i class="fas fa-external-link-alt"></i></a></div>`;
         html += `        <div class="col-12 info-right" style="padding-top: 5px;">Timestamp: ${getLocalDate(data.timestamp)}</div>`;
         html += `        <input type="hidden" id="questionId${i}" value="${data.id}">`;
         html += `        <input type="hidden" id="answerHash${i}" value="${data.answer}">`;
@@ -160,6 +160,8 @@ const sendAnswer = (num) => {
                 html: `
                     <div>Success!</div>
                     <div class="cofirm-content">${result.value}</div>
+                    <div style="color: #FF4557;font-size:0.8rem;">Reflected in about 15 seconds.</div>
+                    <a href="./my-answered" style="font-size:0.8rem;">Added to "My Answer Page".</a>
                 `,
                 allowOutsideClick: false, 
                 icon: 'success'

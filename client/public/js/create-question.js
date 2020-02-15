@@ -88,6 +88,8 @@ const sendQuestion = async () => {
                         html: `
                             <div>Success!</div>
                             <div class="cofirm-content">${result.value}</div>
+                            <div style="color: #FF4557;font-size:0.8rem;">Reflected in about 15 seconds.</div>
+                            <a href="./my-question" style="font-size:0.8rem;">Added to "My Question Page".</a>
                         `,
                         allowOutsideClick: false,
                         icon: 'success'
