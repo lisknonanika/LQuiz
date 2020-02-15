@@ -180,6 +180,7 @@ const openMoreAnswer = (elem) => {
 const answeredInfo = async (qid) => {
     let html = "";
     const ret = await getAnswerByCondition({qid: qid});
+    const isMore = false;
     if (!ret.success) {
         html += `<div class="alert alert-danger">Failed to get answered data</div>`;
     } else if (ret.response.length == 0) {
@@ -189,15 +190,17 @@ const answeredInfo = async (qid) => {
         html += `<div class="cofirm-content">`;
         for (i=0; i < ret.response.length; i++) {
             const data = ret.response[i];
-            if (i >= 5) html+= '<div id="more-answer" style="display:none;">';
+            if (i == 5) {
+                isMore = true;
+                html+= '<div id="more-answer" style="display:none;">';
+            }
 
             html += `<a href="${EXPLORER_URL}/tx/${data.id}" target="_blank">${data.senderId} <i class="fas fa-external-link-alt"></i></a>`;
             if (i < ret.response.length - 1) html += `<hr>`;
-
-            if (i >= 5) {
-                html+= '</div>';
-                html+= '<a href="javascript:void 0;" class="btn btn-link" style="display:block;padding:0;font-size:0.8rem;" onclick="openMoreAnswer(this)">more..</a>';
-            }
+        }
+        if (isMore) {
+            html+= '</div>';
+            html+= '<a href="javascript:void 0;" class="btn btn-link" style="display:block;padding:0;font-size:0.8rem;" onclick="openMoreAnswer(this)">more..</a>';
         }
         html += `</div>`;
     }
