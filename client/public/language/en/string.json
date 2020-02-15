@@ -1,0 +1,31 @@
+{
+    "whatislquiz": {
+        "1": "LQuiz is a PoC built with <a href='https://github.com/LiskHQ/lisk-sdk' target='_blank'>LiskSDK</a>.",
+        "2": "Account initialization plays an important role in Lisk.",
+        "3": "However, I must create a transfer transaction to initialize it.",
+        "4": "Buy LSK, transfer LSK to my account, and transfer LSK again to initialize.　(To be honest, this is troublesome lol)",
+        "5": "When the conditions were met, I wanted to initialize my account and get an LSK.",
+        "6": "So I thought this LQuiz.",
+        "7": "The condition for initializing an account and obtaining an LSK is to answer the quiz correctly.",
+        "8": "There is no fee for answer."
+    },
+    "nextlquiz": {
+        "1": "I think that LQuiz can be used for job requests by extending it a little more.",
+        "2": "After confirming the completion of the work, you can give a pre-prepared reward by giving the \"answer\".",
+        "3": "The fact that the reward is pre-prepared will give the work contractor peace of mind.",
+        "4": "However, it is possible to enter the answer before the contractor, which could lead to fraud.",
+        "5": "Therefore, there is a need for a system that incorporates some evaluation method and gives punishment."
+    },
+    "howtolquiz": {
+        "1": "Login Button: Enter your passphrase and login",
+        "2": "Guest Login Button: Login without entering a passphrase (cannot create or answer questions.)",
+        "3": "Create Account: Create an account that can be used with Lisk and LQuiz.",
+        "4": "Displays a list of currently available questions. (Questions registered by the login user is not displayed.)",
+        "5": "Displays a list of questions that have reached the number of reward recipients. (Questions answered by the login user is not displayed.)",
+        "6": "Create a new question. (Registration requires (reward * number of people receiving the reward) + fee.)",
+        "7": "Questions registered by the login user is displayed.",
+        "8": "Questions Answerd by the login user is displayed.",
+        "9": "Switch login user.",
+        "10": "Logout of Quiz."
+    }
+}
